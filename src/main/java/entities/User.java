@@ -37,6 +37,12 @@ public class User implements Serializable {
     public boolean verifyPassword(String plainText, String pw) {
         return (BCrypt.checkpw(plainText, password));
     }
+    
+    //this is for the DTO class
+    //but does it make sense to have this one?
+    public String getPassword(){
+        return password;
+    }
 
     public String getUserName() {
         return userName;
