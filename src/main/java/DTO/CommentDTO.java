@@ -18,11 +18,13 @@ public class CommentDTO {
     private int id;
     private BlogEntry be;
     private User u;
+    private String content;
 
     public CommentDTO(Comment c) {
         this.id = c.getId();
         this.be = c.getBe();
         this.u = c.getU();
+        this.content = be.getContent();
     }
     
     

@@ -25,7 +25,7 @@ public class BlogEntry implements Serializable {
     private int id;
     private User u;
     private Date d;
-    //private String content;
+    private String content;
     
     public BlogEntry(){}
 
@@ -33,6 +33,16 @@ public class BlogEntry implements Serializable {
         this.u = u;
         this.d = d;
     }
+    
+    public String getContent() {
+        return content;
+    }
+
+    public void setContent(String content) {
+        this.content = content;
+    }
+    
+    
 
     public User getUser() {
         return u;

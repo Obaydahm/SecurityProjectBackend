@@ -18,10 +18,12 @@ public class BlogEntryDTO {
     private int id;
     private User u;
     private Date d;
+    private String content;
 
     public BlogEntryDTO(BlogEntry be) {
         this.id = be.getId();
         this.u = be.getUser();
         this.d = be.getDate();
+        this.content = be.getContent();
     }
 }
