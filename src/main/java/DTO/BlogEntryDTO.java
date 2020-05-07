@@ -5,24 +5,23 @@
  */
 package DTO;
 
+import entities.BlogEntry;
 import entities.User;
+import java.util.Date;
 
 /**
  *
  * @author Ludvig
  */
-public class UserDTO {
+public class BlogEntryDTO {
     
     private int id;
-    private String userName;
-    private String password;
-    private String role;
-    
-    UserDTO(User u){
-        this.id = u.getId();
-        this.userName = u.getUserName();
-        this.password = u.getPassword();
-        this.role = u.getRole();
+    private User u;
+    private Date d;
+
+    public BlogEntryDTO(BlogEntry be) {
+        this.id = be.getId();
+        this.u = be.getUser();
+        this.d = be.getDate();
     }
-    
 }

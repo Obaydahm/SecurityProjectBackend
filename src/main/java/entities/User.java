@@ -25,12 +25,14 @@ public class User implements Serializable {
     private int id;
     private String userName;
     private String password;
+    public String role;
     
     public User() {
     }
     
-    public User(String userName, String userPass) {
+    public User(String userName, String role, String userPass) {
         this.userName = userName;
+        this.role = role;
         this.password = BCrypt.hashpw(userPass, BCrypt.gensalt(12));
     }
     
@@ -42,6 +44,14 @@ public class User implements Serializable {
     //but does it make sense to have this one?
     public String getPassword(){
         return password;
+    }
+
+    public void setRole(String role) {
+        this.role = role;
+    }
+
+    public String getRole() {
+        return role;
     }
 
     public String getUserName() {

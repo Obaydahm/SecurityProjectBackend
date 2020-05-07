@@ -5,24 +5,25 @@
  */
 package DTO;
 
+import entities.BlogEntry;
+import entities.Comment;
 import entities.User;
 
 /**
  *
  * @author Ludvig
  */
-public class UserDTO {
+public class CommentDTO {
     
     private int id;
-    private String userName;
-    private String password;
-    private String role;
-    
-    UserDTO(User u){
-        this.id = u.getId();
-        this.userName = u.getUserName();
-        this.password = u.getPassword();
-        this.role = u.getRole();
+    private BlogEntry be;
+    private User u;
+
+    public CommentDTO(Comment c) {
+        this.id = c.getId();
+        this.be = c.getBe();
+        this.u = c.getU();
     }
+    
     
 }
