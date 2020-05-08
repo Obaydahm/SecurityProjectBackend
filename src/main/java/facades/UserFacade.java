@@ -5,10 +5,6 @@
  */
 package facades;
 
-import DTO.BlogEntryDTO;
-import entities.BlogEntry;
-import java.util.List;
-import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 
@@ -16,13 +12,13 @@ import javax.persistence.EntityManagerFactory;
  *
  * @author Henrik
  */
-public class BlogEntryFacade {
-
-    private static BlogEntryFacade instance;
+public class UserFacade {
+    
+    private static UserFacade instance;
     private static EntityManagerFactory emf;
 
     //Private Constructor to ensure Singleton
-    private BlogEntryFacade() {
+    private UserFacade() {
     }
 
     /**
@@ -30,10 +26,10 @@ public class BlogEntryFacade {
      * @param _emf
      * @return an instance of this facade class.
      */
-    public static BlogEntryFacade getBlogEntryFacade(EntityManagerFactory _emf) {
+    public static UserFacade getUserFacade(EntityManagerFactory _emf) {
         if (instance == null) {
             emf = _emf;
-            instance = new BlogEntryFacade();
+            instance = new UserFacade();
         }
         return instance;
     }
@@ -42,21 +38,14 @@ public class BlogEntryFacade {
         return emf.createEntityManager();
     }
 
-    // Create
-//    public BlogEntryDTO addBlogEntry(BlogEntryDTO b) {
-//        EntityManager em = getEntityManager();
-//        BlogEntry blogEntry = new BlogEntry(b.);
-//
-//    }
-
-    public long getBlogEntryCount() {
+    public long getUserCount() {
         EntityManager em = emf.createEntityManager();
         try {
-            long blogEntryCount = (long) em.createQuery("SELECT COUNT(b) FROM BlogEntry b").getSingleResult();
-            return blogEntryCount;
+            long userCount = (long) em.createQuery("SELECT COUNT(u) FROM User u").getSingleResult();
+            return userCount;
         } finally {
             em.close();
         }
 
-    }
+    }    
 }
