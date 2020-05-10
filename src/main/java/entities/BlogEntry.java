@@ -35,8 +35,8 @@ public class BlogEntry implements Serializable {
     
     public BlogEntry(){}
 
-    public BlogEntry(User u, Date d) {
-        this.u = u;
+    public BlogEntry(String content, Date d) {
+        this.content = content;
         this.d = d;
     }
     
@@ -48,8 +48,6 @@ public class BlogEntry implements Serializable {
         this.content = content;
     }
     
-    
-
     public User getUser() {
         return u;
     }

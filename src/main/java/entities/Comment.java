@@ -35,10 +35,8 @@ public class Comment implements Serializable {
     public Comment() {
     }
 
-    public Comment(int id, BlogEntry be, User u) {
-        this.id = id;
-        this.be = be;
-        this.u = u;
+    public Comment(String content) {
+        this.content = content;
     }
 
     public BlogEntry getBe() {
@@ -57,11 +55,11 @@ public class Comment implements Serializable {
         this.content = content;
     }
 
-    public void setBe(BlogEntry be) {
+    public void setBlogEntry(BlogEntry be) {
         this.be = be;
     }
 
-    public void setU(User u) {
+    public void setUser(User u) {
         this.u = u;
     }
 
