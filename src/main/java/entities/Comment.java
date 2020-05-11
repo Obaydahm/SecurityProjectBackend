@@ -35,10 +35,15 @@ public class Comment implements Serializable {
     public Comment() {
     }
 
+<<<<<<< HEAD
     public Comment(int id, BlogEntry be, User1 u) {
         this.id = id;
         this.be = be;
         this.u = u;
+=======
+    public Comment(String content) {
+        this.content = content;
+>>>>>>> 390ce65189f32a4497b2a30ab085273eab880df5
     }
 
     public BlogEntry getBe() {
@@ -57,11 +62,15 @@ public class Comment implements Serializable {
         this.content = content;
     }
 
-    public void setBe(BlogEntry be) {
+    public void setBlogEntry(BlogEntry be) {
         this.be = be;
     }
 
+<<<<<<< HEAD
     public void setU(User1 u) {
+=======
+    public void setUser(User u) {
+>>>>>>> 390ce65189f32a4497b2a30ab085273eab880df5
         this.u = u;
     }
 

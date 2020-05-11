@@ -35,8 +35,13 @@ public class BlogEntry implements Serializable {
     
     public BlogEntry(){}
 
+<<<<<<< HEAD
     public BlogEntry(User1 u, Date d) {
         this.u = u;
+=======
+    public BlogEntry(String content, Date d) {
+        this.content = content;
+>>>>>>> 390ce65189f32a4497b2a30ab085273eab880df5
         this.d = d;
     }
     
@@ -48,9 +53,13 @@ public class BlogEntry implements Serializable {
         this.content = content;
     }
     
+<<<<<<< HEAD
     
 
     public User1 getUser() {
+=======
+    public User getUser() {
+>>>>>>> 390ce65189f32a4497b2a30ab085273eab880df5
         return u;
     }
 
