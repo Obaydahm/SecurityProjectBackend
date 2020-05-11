@@ -1,10 +1,9 @@
 package facades;
 
-import entities.User;
-import java.util.List;
+import DTO.UserDTO;
+import entities.User1;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
-import javax.persistence.Persistence;
 
 /**
  *
@@ -36,17 +35,55 @@ public class UserFacade {
         return emf.createEntityManager();
     }
     
-    //TODO Remove/Change this before use
+    // Create
+    public UserDTO addUser(UserDTO u){
+        EntityManager em = getEntityManager();
+        
+        User1 user1 = new User1();
+        user1.getUserName();
+        user1.getPassword();
+        user1.getRole();
+        
+        try{
+            em.getTransaction().begin();
+            em.persist(user1);
+            em.getTransaction().commit();
+        } finally {
+            em.close();
+        }
+        return new UserDTO(user1);
+    }
+    
+    
+    
+    // Find a User
+    public UserDTO getUser(Long user_id){
+        EntityManager em = getEntityManager();
+        User1 userDTO = em.find(User1.class, user_id);
+        return new UserDTO(userDTO);
+    }
+        
+   
+        
+        
+        
+    
+    
+    
+    
+    
+    
+    // No of Users
     public long getUserCount(){
         EntityManager em = emf.createEntityManager();
         try{
-            long userCount = (long)em.createQuery("SELECT COUNT(r) FROM User r").getSingleResult();
+            long userCount = (long)em.createQuery("SELECT COUNT(u) FROM User1 u").getSingleResult();
             return userCount;
         }finally{  
             em.close();
         }
         
     }
-
-
 }
+
+

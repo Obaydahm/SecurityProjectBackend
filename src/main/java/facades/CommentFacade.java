@@ -5,6 +5,8 @@
  */
 package facades;
 
+import DTO.CommentDTO;
+import entities.Comment;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 
@@ -38,6 +40,45 @@ public class CommentFacade {
         return emf.createEntityManager();
     }
 
+    // Create 
+    public CommentDTO addComment(CommentDTO c){
+        EntityManager em = getEntityManager();
+        
+        Comment co = new Comment();
+        co.getBe();
+        co.getU();
+        co.getContent();
+        
+        try {
+            em.getTransaction().begin();
+            em.persist(co);
+            em.getTransaction().commit();
+        } finally {
+            em.close();
+        }
+        return new CommentDTO(co);
+    }
+    
+    // Find a Comment
+    public CommentDTO getComments(Long comment_id){
+        EntityManager em = getEntityManager();
+        Comment commentDTO = em.find(Comment.class, comment_id);
+        return new CommentDTO(commentDTO);
+    }
+    
+//    // Get all comments
+//    public CommentDTO getAllComments(){
+//        EntityManager em = getEntityManager();
+//        try{
+//            List<Comment> list = em.createQuery("SELECT c FROM Comment c", Comment.class).getResultList();
+//            return new CommentDTO(list);
+//        }finally {
+//            em.close();
+//        }
+//    }
+    
+    
+    // No of Comments
     public long getCommentCount() {
         EntityManager em = emf.createEntityManager();
         try {

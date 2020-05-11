@@ -1,17 +1,15 @@
 package rest;
 
+import DTO.UserDTO;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import entities.User;
 import utils.EMF_Creator;
 import facades.UserFacade;
 import javax.persistence.EntityManagerFactory;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
-import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
@@ -37,6 +35,25 @@ public class UserResource {
     public String demo() {
         return "{\"msg\":\"Hello World\"}";
     }
+    
+    // Create a Login
+    @Path("create")
+    @POST
+    @Produces({MediaType.APPLICATION_JSON})
+    @Consumes({MediaType.APPLICATION_JSON})
+    public String createUser(UserDTO userDTO){
+        FACADE.addUser(userDTO);
+        return "{\"msg\":\"Login created\"}";   
+    }
+    
+    // Find a User
+    
+   
+    
+    
+    
+    
+    
     @Path("count")
     @GET
     @Produces({MediaType.APPLICATION_JSON})

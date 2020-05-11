@@ -7,7 +7,7 @@ package DTO;
 
 import entities.BlogEntry;
 import entities.Comment;
-import entities.User;
+import entities.User1;
 
 /**
  *
@@ -17,7 +17,7 @@ public class CommentDTO {
     
     private int id;
     private BlogEntry be;
-    private User u;
+    private User1 u;
     private String content;
 
     public CommentDTO(Comment c) {

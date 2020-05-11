@@ -17,7 +17,7 @@ import org.mindrot.jbcrypt.BCrypt;
  * @author Ludvig
  */
 @Entity
-public class User implements Serializable {
+public class User1 implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @Id
@@ -25,14 +25,14 @@ public class User implements Serializable {
     private int id;
     private String userName;
     private String password;
-    public String role;
+    private String role1;
     
-    public User() {
+    public User1() {
     }
     
-    public User(String userName, String role, String userPass) {
+    public User1(String userName, String role1, String userPass) {
         this.userName = userName;
-        this.role = role;
+        this.role1 = role1;
         this.password = BCrypt.hashpw(userPass, BCrypt.gensalt(12));
     }
     
@@ -46,12 +46,12 @@ public class User implements Serializable {
         return password;
     }
 
-    public void setRole(String role) {
-        this.role = role;
+    public void setRole(String role1) {
+        this.role1 = role1;
     }
 
     public String getRole() {
-        return role;
+        return role1;
     }
 
     public String getUserName() {

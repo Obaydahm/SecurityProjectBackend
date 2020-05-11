@@ -28,14 +28,14 @@ public class Comment implements Serializable {
     private BlogEntry be;
     
     @OneToOne
-    private User u;
+    private User1 u;
     
     private String content;
 
     public Comment() {
     }
 
-    public Comment(int id, BlogEntry be, User u) {
+    public Comment(int id, BlogEntry be, User1 u) {
         this.id = id;
         this.be = be;
         this.u = u;
@@ -45,7 +45,7 @@ public class Comment implements Serializable {
         return be;
     }
 
-    public User getU() {
+    public User1 getU() {
         return u;
     }
 
@@ -61,7 +61,7 @@ public class Comment implements Serializable {
         this.be = be;
     }
 
-    public void setU(User u) {
+    public void setU(User1 u) {
         this.u = u;
     }
 

@@ -5,7 +5,7 @@
  */
 package DTO;
 
-import entities.User;
+import entities.User1;
 
 /**
  *
@@ -16,13 +16,13 @@ public class UserDTO {
     private int id;
     private String userName;
     private String password;
-    private String role;
+    private String role1;
     
-    UserDTO(User u){
+    public UserDTO(User1 u){
         this.id = u.getId();
         this.userName = u.getUserName();
         this.password = u.getPassword();
-        this.role = u.getRole();
+        this.role1 = u.getRole();
     }
     
 }

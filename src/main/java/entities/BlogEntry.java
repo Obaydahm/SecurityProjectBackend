@@ -27,7 +27,7 @@ public class BlogEntry implements Serializable {
     private int id;
     
     @OneToOne
-    private User u;
+    private User1 u;
     
     @Temporal(javax.persistence.TemporalType.DATE)
     private Date d;
@@ -35,7 +35,7 @@ public class BlogEntry implements Serializable {
     
     public BlogEntry(){}
 
-    public BlogEntry(User u, Date d) {
+    public BlogEntry(User1 u, Date d) {
         this.u = u;
         this.d = d;
     }
@@ -50,7 +50,7 @@ public class BlogEntry implements Serializable {
     
     
 
-    public User getUser() {
+    public User1 getUser() {
         return u;
     }
 
@@ -58,7 +58,7 @@ public class BlogEntry implements Serializable {
         return d;
     }
 
-    public void setUser(User u) {
+    public void setUser(User1 u) {
         this.u = u;
     }
 

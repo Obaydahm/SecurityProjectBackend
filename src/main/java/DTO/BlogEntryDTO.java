@@ -6,7 +6,7 @@
 package DTO;
 
 import entities.BlogEntry;
-import entities.User;
+import entities.User1;
 import java.util.Date;
 
 /**
@@ -16,7 +16,7 @@ import java.util.Date;
 public class BlogEntryDTO {
     
     private int id;
-    private User u;
+    private User1 u;
     private Date d;
     private String content;
 

@@ -7,8 +7,6 @@ package facades;
 
 import DTO.BlogEntryDTO;
 import entities.BlogEntry;
-import java.util.List;
-import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 
@@ -43,12 +41,43 @@ public class BlogEntryFacade {
     }
 
     // Create
-//    public BlogEntryDTO addBlogEntry(BlogEntryDTO b) {
+    public BlogEntryDTO addBlogEntry(BlogEntryDTO b) {
+        EntityManager em = getEntityManager();
+
+        BlogEntry be = new BlogEntry();
+        be.getUser();
+        be.getDate();
+        be.getContent();
+
+        try {
+            em.getTransaction().begin();
+            em.persist(be);
+            em.getTransaction().commit();
+        } finally {
+            em.close();
+        }
+        return new BlogEntryDTO(be);
+    }
+
+    // Find a BlogEntry
+    public BlogEntryDTO getBlogEntry(Long blogEntry_id) {
+        EntityManager em = getEntityManager();
+        BlogEntry blogEntryDTO = em.find(BlogEntry.class, blogEntry_id);
+        return new BlogEntryDTO(blogEntryDTO);
+    }
+
+//    // Get all 
+//    public BlogEntryDTO getAllBlogEntries() {
 //        EntityManager em = getEntityManager();
-//        BlogEntry blogEntry = new BlogEntry(b.);
-//
+//        try {
+//            List<BlogEntry> list = em.createQuery("SELECT b FROM BlogEntry b", BlogEntry.class).getResultList();
+//            return new BlogEntryDTO(list);
+//        } finally {
+//            em.close();
+//        }
 //    }
 
+    // No of BlogEntries
     public long getBlogEntryCount() {
         EntityManager em = emf.createEntityManager();
         try {

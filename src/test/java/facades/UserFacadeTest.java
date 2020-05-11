@@ -1,7 +1,7 @@
 package facades;
 
 import utils.EMF_Creator;
-import entities.User;
+import entities.User1;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import org.junit.jupiter.api.AfterAll;
