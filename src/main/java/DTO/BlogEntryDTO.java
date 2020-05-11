@@ -22,7 +22,6 @@ public class BlogEntryDTO {
 
     public BlogEntryDTO(BlogEntry be) {
         this.id = be.getId();
-        this.u = be.getUser();
         this.d = be.getDate();
         this.content = be.getContent();
     }

@@ -23,27 +23,27 @@ public class Comment implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
-    
+
     @OneToOne
     private BlogEntry be;
-    
+
     @OneToOne
     private User1 u;
-    
+
     private String content;
 
     public Comment() {
     }
 
-<<<<<<< HEAD
     public Comment(int id, BlogEntry be, User1 u) {
         this.id = id;
         this.be = be;
         this.u = u;
-=======
+    }
+
     public Comment(String content) {
         this.content = content;
->>>>>>> 390ce65189f32a4497b2a30ab085273eab880df5
+
     }
 
     public BlogEntry getBe() {
@@ -66,11 +66,7 @@ public class Comment implements Serializable {
         this.be = be;
     }
 
-<<<<<<< HEAD
-    public void setU(User1 u) {
-=======
-    public void setUser(User u) {
->>>>>>> 390ce65189f32a4497b2a30ab085273eab880df5
+    public void setUser(User1 u) {
         this.u = u;
     }
 
@@ -81,5 +77,5 @@ public class Comment implements Serializable {
     public void setId(int id) {
         this.id = id;
     }
-    
+
 }

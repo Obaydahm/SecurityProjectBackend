@@ -2,6 +2,7 @@ package facades;
 
 import DTO.UserDTO;
 import entities.User1;
+import javax.naming.AuthenticationException;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 
@@ -13,13 +14,13 @@ public class UserFacade {
 
     private static UserFacade instance;
     private static EntityManagerFactory emf;
-    
+
     //Private Constructor to ensure Singleton
-    private UserFacade() {}
-    
-    
+    private UserFacade() {
+    }
+
     /**
-     * 
+     *
      * @param _emf
      * @return an instance of this facade class.
      */
@@ -34,17 +35,17 @@ public class UserFacade {
     private EntityManager getEntityManager() {
         return emf.createEntityManager();
     }
-    
+
     // Create
-    public UserDTO addUser(UserDTO u){
+    public UserDTO addUser(UserDTO u) {
         EntityManager em = getEntityManager();
-        
+
         User1 user1 = new User1();
         user1.getUserName();
         user1.getPassword();
         user1.getRole();
-        
-        try{
+
+        try {
             em.getTransaction().begin();
             em.persist(user1);
             em.getTransaction().commit();
@@ -53,37 +54,39 @@ public class UserFacade {
         }
         return new UserDTO(user1);
     }
-    
-    
-    
+
     // Find a User
-    public UserDTO getUser(Long user_id){
+    public UserDTO getUser(Long user_id) {
         EntityManager em = getEntityManager();
         User1 userDTO = em.find(User1.class, user_id);
         return new UserDTO(userDTO);
     }
-        
-   
-        
-        
-        
-    
-    
-    
-    
-    
-    
+
     // No of Users
-    public long getUserCount(){
+    public long getUserCount() {
         EntityManager em = emf.createEntityManager();
-        try{
-            long userCount = (long)em.createQuery("SELECT COUNT(u) FROM User1 u").getSingleResult();
+        try {
+            long userCount = (long) em.createQuery("SELECT COUNT(u) FROM User1 u").getSingleResult();
             return userCount;
-        }finally{  
+        } finally {
             em.close();
         }
-        
+
+    }
+
+    public User1 getVeryfiedUser(String username, String password) throws AuthenticationException {
+        EntityManager em = emf.createEntityManager();
+        User1 user;
+        try {
+            user = (User1) em.createQuery("SELECT u FROM User1 u WHERE u.userName = :name", User1.class).setParameter("name", username);
+                    
+            if (user == null || !user.verifyPassword(password, user.getPassword())) {
+                throw new AuthenticationException("Invalid user name or password");
+            }
+        } finally {
+            em.close();
+        }
+        return user;
+
     }
 }
-
-

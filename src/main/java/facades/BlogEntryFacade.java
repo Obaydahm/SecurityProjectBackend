@@ -45,7 +45,6 @@ public class BlogEntryFacade {
         EntityManager em = getEntityManager();
 
         BlogEntry be = new BlogEntry();
-        be.getUser();
         be.getDate();
         be.getContent();
 

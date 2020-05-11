@@ -3,8 +3,12 @@ package rest;
 import DTO.UserDTO;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+import entities.User1;
 import utils.EMF_Creator;
 import facades.UserFacade;
+import javax.naming.AuthenticationException;
 import javax.persistence.EntityManagerFactory;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
@@ -63,5 +67,28 @@ public class UserResource {
         return "{\"count\":"+count+"}";  //Done manually so no need for a DTO
     }
 
- 
+ @Path("login")
+    @POST
+    @Consumes({MediaType.APPLICATION_JSON})
+    @Produces({MediaType.APPLICATION_JSON})
+    public String login(String stringjson) throws AuthenticationException {
+        JsonObject json = new JsonParser().parse(stringjson).getAsJsonObject();
+        String username = json.get("username").getAsString();
+        String password = json.get("password").getAsString();
+
+        try {
+            User1 user = FACADE.getVeryfiedUser(username, password);
+            if(user == null) {
+            return "{\"Password or username is incorrect\"}";
+        } else {
+                return GSON.toJson(user);
+            }
+
+        } catch (AuthenticationException ex) {
+            throw ex;  
+        }
+
+    }
+
+
 }

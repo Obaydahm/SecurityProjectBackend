@@ -7,8 +7,10 @@ package Main;
 
 import entities.BlogEntry;
 import entities.Comment;
-import entities.User;
+import entities.User1;
+import facades.UserFacade;
 import java.sql.Date;
+import javax.naming.AuthenticationException;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
@@ -31,14 +33,14 @@ public class NewMain {
             "ax2",
             EMF_Creator.Strategy.CREATE);
     
-    public static void main(String[] args) {
+    public static void main(String[] args) throws AuthenticationException {
         //Persistence.generateSchema("pu", null);
-        EntityManager em = EMF.createEntityManager();
+       /* EntityManager em = EMF.createEntityManager();
         
-        User u1 = new User("darkCrystalFan92", "user", "pqwoefm32");
-        User u2 = new User("TheSnarx", "user", "+wef32+0");
-        User u3 = new User("AndersAnd", "user", "ipwef23f");
-        User admin = new User("Admin", "admin", "admin");
+        User1 u1 = new User1("darkCrystalFan92", "user", "pqwoefm32");
+        User1 u2 = new User1("TheSnarx", "user", "+wef32+0");
+        User1 u3 = new User1("AndersAnd", "user", "ipwef23f");
+        User1 admin = new User1("Admin", "admin", "admin");
         
         BlogEntry be1 = new BlogEntry("Hej. Jeg er sej.", new Date(12, 4, 2200));
         BlogEntry be2 = new BlogEntry("Whaaaat", new Date(3, 10, 1900));
@@ -112,5 +114,10 @@ public class NewMain {
             em.close();
         }
     }
-
+*/
+ 
+        UserFacade.getFacadeExample(EMF).getVeryfiedUser("AndersAnd", "qweqe");
+       
 }
+}
+        
