@@ -7,6 +7,7 @@ package facades;
 
 import DTO.CommentDTO;
 import entities.Comment;
+import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 
@@ -66,16 +67,16 @@ public class CommentFacade {
         return new CommentDTO(commentDTO);
     }
     
-//    // Get all comments
-//    public CommentDTO getAllComments(){
-//        EntityManager em = getEntityManager();
-//        try{
-//            List<Comment> list = em.createQuery("SELECT c FROM Comment c", Comment.class).getResultList();
-//            return new CommentDTO(list);
-//        }finally {
-//            em.close();
-//        }
-//    }
+    // Get all comments
+    public CommentDTO getAllComments(){
+        EntityManager em = getEntityManager();
+        try{
+            List<Comment> comment = em.createQuery("SELECT c FROM Comment c", Comment.class).getResultList();
+            return new CommentDTO(comment);
+        }finally {
+            em.close();
+        }
+    }
     
     
     // No of Comments
