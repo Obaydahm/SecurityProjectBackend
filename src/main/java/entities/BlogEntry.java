@@ -50,9 +50,6 @@ public class BlogEntry implements Serializable {
     public void setContent(String content) {
         this.content = content;
     }
-    
-
-    
 
     public User1 getUser() {
         return u;
