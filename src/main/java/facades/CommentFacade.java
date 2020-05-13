@@ -6,6 +6,7 @@
 package facades;
 
 import DTO.CommentDTO;
+import DTO.UserDTO;
 import entities.Comment;
 import java.util.List;
 import javax.persistence.EntityManager;
@@ -78,6 +79,20 @@ public class CommentFacade {
         }
     }
     
+    // Remove id
+    public CommentDTO remove(long id){
+        EntityManager em = getEntityManager();
+        try {
+            em.getTransaction().begin();
+            CommentDTO c = em.find(CommentDTO.class, id);
+            em.remove(em.merge(c));
+            em.getTransaction().commit();
+            return c;
+            
+        } finally {
+            em.close();
+        }
+    }
     
     // No of Comments
     public long getCommentCount() {

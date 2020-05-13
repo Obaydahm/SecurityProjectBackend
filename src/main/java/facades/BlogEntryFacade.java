@@ -6,7 +6,12 @@
 package facades;
 
 import DTO.BlogEntryDTO;
+import DTO.CommentDTO;
+import DTO.UserDTO;
 import entities.BlogEntry;
+import entities.Comment;
+import entities.User1;
+import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 
@@ -65,16 +70,32 @@ public class BlogEntryFacade {
         return new BlogEntryDTO(blogEntryDTO);
     }
 
-//    // Get all 
-//    public BlogEntryDTO getAllBlogEntries() {
-//        EntityManager em = getEntityManager();
-//        try {
-//            List<BlogEntry> list = em.createQuery("SELECT b FROM BlogEntry b", BlogEntry.class).getResultList();
-//            return new BlogEntryDTO(list);
-//        } finally {
-//            em.close();
-//        }
-//    }
+    // Get all blogEntries
+    public BlogEntryDTO getAllBlogEntries(){
+        EntityManager em = getEntityManager();
+        try{
+            
+            List<BlogEntry> blogEntry = em.createQuery("SELECT b FROM BlogEntry b", BlogEntry.class).getResultList();
+            return new BlogEntryDTO((BlogEntry) blogEntry);
+        }finally {
+            em.close();
+        }
+    }
+    
+    
+    // Remove blogentry
+    public BlogEntryDTO remove(long id) {
+        EntityManager em = getEntityManager();
+        try {
+            em.getTransaction().begin();
+            BlogEntryDTO b = em.find(BlogEntryDTO.class, id);
+            em.remove(em.merge(b));
+            em.getTransaction().commit();
+            return b;
+        } finally {
+            em.close();
+        }
+    }
 
     // No of BlogEntries
     public long getBlogEntryCount() {
