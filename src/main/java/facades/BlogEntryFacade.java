@@ -7,6 +7,8 @@ package facades;
 
 import DTO.BlogEntryDTO;
 import entities.BlogEntry;
+import entities.User1;
+import java.sql.Date;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 
@@ -41,12 +43,10 @@ public class BlogEntryFacade {
     }
 
     // Create
-    public BlogEntryDTO addBlogEntry(BlogEntryDTO b) {
+    public BlogEntry addBlogEntry(String content, Date d, User1 u) {
         EntityManager em = getEntityManager();
 
-        BlogEntry be = new BlogEntry();
-        be.getDate();
-        be.getContent();
+        BlogEntry be = new BlogEntry(content, d, u);
 
         try {
             em.getTransaction().begin();
@@ -55,13 +55,13 @@ public class BlogEntryFacade {
         } finally {
             em.close();
         }
-        return new BlogEntryDTO(be);
+        return be;
     }
 
     // Find a BlogEntry
-    public BlogEntryDTO getBlogEntry(Long blogEntry_id) {
+    public BlogEntry getBlogEntry(int id) {
         EntityManager em = getEntityManager();
-        BlogEntry blogEntryDTO = em.find(BlogEntry.class, blogEntry_id);
+        BlogEntry blogEntryDTO = em.find(BlogEntry.class, id);
         return new BlogEntryDTO(blogEntryDTO);
     }
 

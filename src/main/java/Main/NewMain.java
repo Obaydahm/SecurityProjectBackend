@@ -116,7 +116,7 @@ public class NewMain {
     }
 */
  
-        UserFacade.getFacadeExample(EMF).getVeryfiedUser("AndersAnd", "qweqe");
+        //UserFacade.getFacadeExample(EMF).getVeryfiedUser("AndersAnd", "qweqe");
        
 }
 }

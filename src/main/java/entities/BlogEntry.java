@@ -38,9 +38,10 @@ public class BlogEntry implements Serializable {
 
    
 
-    public BlogEntry(String content, Date d) {
+    public BlogEntry(String content, Date d, User1 u) {
         this.content = content;
         this.d = d;
+        this.u = u;
     }
     
     public String getContent() {
