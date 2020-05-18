@@ -6,6 +6,7 @@
 package entities;
 
 import java.io.Serializable;
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -24,10 +25,10 @@ public class Comment implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    @OneToOne
+    @OneToOne (cascade = CascadeType.PERSIST)
     private BlogEntry be;
 
-    @OneToOne
+    @OneToOne (cascade = CascadeType.PERSIST)
     private User1 u;
 
     private String content;

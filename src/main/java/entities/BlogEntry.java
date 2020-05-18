@@ -7,6 +7,7 @@ package entities;
 
 import java.io.Serializable;
 import java.util.Date;
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -26,7 +27,7 @@ public class BlogEntry implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
     
-    @OneToOne
+    @OneToOne (cascade = CascadeType.PERSIST)
     private User1 u;
     
     @Temporal(javax.persistence.TemporalType.DATE)
@@ -35,10 +36,7 @@ public class BlogEntry implements Serializable {
     
     public BlogEntry(){}
 
-
-   
-
-    public BlogEntry(String content, Date d, User1 u) {
+    public BlogEntry(String content, Date d , User1 u) {
         this.content = content;
         this.d = d;
         this.u = u;
@@ -78,7 +76,7 @@ public class BlogEntry implements Serializable {
 
     @Override
     public String toString() {
-        return "entities.BlogEntry[ id=" + id + " ]";
+        return "BlogEntry: id=" + id + " Content:" + content + " User: " + u.getUserName();
     }
     
 }
