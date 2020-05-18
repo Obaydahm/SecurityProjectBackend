@@ -6,10 +6,14 @@
 package facades;
 
 import DTO.BlogEntryDTO;
+import DTO.CommentDTO;
+import DTO.UserDTO;
 import entities.BlogEntry;
 import entities.User1;
 import java.sql.Date;
 import java.util.ArrayList;
+import entities.Comment;
+import entities.User1;
 import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -116,12 +120,14 @@ public class BlogEntryFacade {
         }
     }
 
+
     public List getAllBlogEntriesFromUser(int id /*String content*/) {
         EntityManager em = getEntityManager();
         try {
             List<BlogEntry> list = em.createQuery("SELECT b FROM BlogEntry b WHERE b.u = '" + id /*content*/ + "'" , BlogEntry.class).getResultList();
             return list;
-        } finally {
+
+        }finally {
             em.close();
         }
     }

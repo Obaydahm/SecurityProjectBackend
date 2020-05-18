@@ -3,11 +3,12 @@ package rest;
 import DTO.UserDTO;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import utils.EMF_Creator;
 import facades.UserFacade;
+import utils.EMF_Creator;
 import java.util.List;
 import javax.persistence.EntityManagerFactory;
 import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -47,6 +48,17 @@ public class UserResource {
         return "{\"msg\":\"Login created\"}";
     }
 
+    // Delete user
+    @Path("/{id}")
+    @DELETE   
+    @Produces(MediaType.APPLICATION_JSON)
+    public UserDTO userDTO(@PathParam("id") Long id){
+        UserDTO deletedUser = FACADE.remove(id);
+        return deletedUser;
+    }
+    
+    
+    
     // Find a User
     @Path("id/{id}")
     @GET

@@ -12,6 +12,10 @@ import utils.EMF_Creator;
 import facades.BlogEntryFacade;
 import java.util.List;
 import javax.naming.AuthenticationException;
+import entities.BlogEntry;
+import utils.EMF_Creator;
+import facades.BlogEntryFacade;
+import java.util.List;
 import javax.persistence.EntityManagerFactory;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
@@ -82,4 +86,52 @@ public class BlogEntryRessource {
 
         return GSON.toJson(allBlogEntryDTOs.all);
     }
+    
+//    // Create BlogEntry
+//    @Path("create")
+//    @POST
+//    @Produces({MediaType.APPLICATION_JSON})
+//    @Consumes({MediaType.APPLICATION_JSON})
+//    public String createBlogEntry(BlogEntryDTO blogEntryDTO) {
+//        FACADE.addBlogEntry(blogEntryDTO);
+//        return "{\"msg\":\"Login created\"}";
+//    }
+//
+//    // Delete BlogEntry
+//    @Path("/{id}")
+//    @DELETE   
+//    @Produces(MediaType.APPLICATION_JSON)
+//    public BlogEntryDTO blogEntryDTO(@PathParam("id") Long id){
+//        BlogEntryDTO deletedBlogEntry = FACADE.remove(id);
+//        return deletedBlogEntry;
+//    }
+//    
+//    // Find a BlogEntry
+//    @Path("id/{id}")
+//    @GET
+//    @Produces({MediaType.APPLICATION_JSON})
+//    public BlogEntryDTO findUser(@PathParam("id") Long id) {
+//        BlogEntryDTO b = FACADE.getBlogEntry(id);
+//        return b;
+//    }
+//
+//    // Get all BlogEntries
+//    @Path("all")
+//    @GET
+//    @Produces({MediaType.APPLICATION_JSON})
+//    public List<UserDTO> getAllBlogEntries(){
+//        return (List<UserDTO>) FACADE.getAllBlogEntries();//.getAll();
+//    }
+//            
+//    // Count BlogEntries 
+//    @Path("count")
+//    @GET
+//    @Produces({MediaType.APPLICATION_JSON})
+//    public String getBlogEntries(){
+//        long count = FACADE.getBlogEntryCount();
+//        return "{\"count\":"+count+"}";
+//    }
+    
+    
+    
 }

@@ -75,6 +75,21 @@ public class UserFacade {
         }
     }
         
+    public UserDTO remove(long id){
+        EntityManager em = getEntityManager();
+        try {
+            em.getTransaction().begin();
+            UserDTO u = em.find(UserDTO.class, id);
+            em.remove(em.merge(u));
+            em.getTransaction().commit();
+            return u;
+            
+        } finally {
+            em.close();
+        }
+    }
+    
+    
     // No of Users
     public long getUserCount(){
         EntityManager em = emf.createEntityManager();

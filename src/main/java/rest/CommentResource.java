@@ -6,12 +6,14 @@
 package rest;
 
 import DTO.CommentDTO;
+import DTO.UserDTO;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import facades.CommentFacade;
 import java.util.List;
 import javax.persistence.EntityManagerFactory;
 import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -69,6 +71,16 @@ public class CommentResource {
     public List<CommentDTO> getAllComments(){
         return (List<CommentDTO>) FACADE.getAllComments();//.getAll();
     }
+    
+    // Delete Comment
+    @Path("/{id}")
+    @DELETE
+    @Produces(MediaType.APPLICATION_JSON)
+    public CommentDTO commentDTO(@PathParam("id") Long id){
+        CommentDTO deletedComment = FACADE.remove(id);
+        return deletedComment;
+    }
+    
     
     @Path("count")
     @GET
