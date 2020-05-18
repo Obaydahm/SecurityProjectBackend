@@ -119,7 +119,7 @@ public class BlogEntryFacade {
     public List getAllBlogEntriesFromUser(int id /*String content*/) {
         EntityManager em = getEntityManager();
         try {
-            List<BlogEntry> list = em.createQuery("SELECT b FROM BlogEntry b WHERE b.u LIKE '" + id /*content*/ + "'" , BlogEntry.class).getResultList();
+            List<BlogEntry> list = em.createQuery("SELECT b FROM BlogEntry b WHERE b.u = '" + id /*content*/ + "'" , BlogEntry.class).getResultList();
             return list;
         } finally {
             em.close();
