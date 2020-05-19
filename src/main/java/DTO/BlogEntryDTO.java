@@ -6,9 +6,10 @@
 package DTO;
 
 import entities.BlogEntry;
-import entities.User1;
-import java.sql.Date;
+import entities.Comment;
+import entities.User;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 //import java.util.Date;
 //import java.SQL.Date;
@@ -20,39 +21,36 @@ import java.util.List;
 public class BlogEntryDTO {
 
     private int id;
-    private User1 u;
-    private Date d;
+    private UserDTO user;
+    private Date dateOfCreation;
+    private String title;
     private String content;
-
-    public List<BlogEntryDTO> all = new ArrayList();
-
-    public BlogEntryDTO(List<BlogEntry> blogEntryEntities) {
-        for (int i = 0; i < blogEntryEntities.size(); i++) {
-            all.add(new BlogEntryDTO(blogEntryEntities.get(i)));
-        }
-    }
+    private List<CommentDTO> comments;
 
     public BlogEntryDTO(BlogEntry be) {
         this.id = be.getId();
-        this.d = (Date) be.getDate();
+        this.dateOfCreation = be.getDateOfCreation();
+        this.title = be.getTitle();
         this.content = be.getContent();
-        this.u = be.getUser();
+        this.user = new UserDTO(be.getUser());
+        this.comments = new ArrayList<>();
+        for(Comment c : be.getComments()){
+            this.comments.add(new CommentDTO(c));
+        }
     }
 
     public int getId() {
         return id;
     }
 
-    public User1 getU() {
-        return u;
-    }
-
-    public Date getD() {
-        return d;
-    }
-
     public String getContent() {
         return content;
     }
 
+    @Override
+    public String toString() {
+        return "BlogEntryDTO{" + "id=" + id + ", user=" + user + ", dateOfCreation=" + dateOfCreation + ", title=" + title + ", content=" + content + ", comments=" + comments + '}';
+    }
+    
+    
 }

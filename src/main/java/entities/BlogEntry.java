@@ -7,11 +7,14 @@ package entities;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Temporal;
 
@@ -27,21 +30,49 @@ public class BlogEntry implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
     
-    @OneToOne (cascade = CascadeType.PERSIST)
-    private User1 u;
+    @ManyToOne
+    private User user;
     
     @Temporal(javax.persistence.TemporalType.DATE)
-    private Date d;
+    private Date dateOfCreation;
+    private String title;
     private String content;
+    @OneToMany(mappedBy = "blogEntry")
+    private List<Comment> comments;
     
     public BlogEntry(){}
 
-    public BlogEntry(String content, Date d , User1 u) {
+    public BlogEntry(String title, String content, User user, Date dateOfCreation) {
+        this.user = user;
+        this.dateOfCreation = dateOfCreation;
+        this.title = title;
         this.content = content;
-        this.d = d;
-        this.u = u;
     }
-    
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
+
+    public Date getDateOfCreation() {
+        return dateOfCreation;
+    }
+
+    public void setDateOfCreation(Date dateOfCreation) {
+        this.dateOfCreation = dateOfCreation;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
     public String getContent() {
         return content;
     }
@@ -50,21 +81,15 @@ public class BlogEntry implements Serializable {
         this.content = content;
     }
 
-    public User1 getUser() {
-        return u;
+    public List<Comment> getComments() {
+        return comments;
     }
 
-    public Date getDate() {
-        return d;
+    public void setComments(List<Comment> comments) {
+        this.comments = comments;
     }
-
-    public void setUser(User1 u) {
-        this.u = u;
-    }
-
-    public void setDate(Date d) {
-        this.d = d;
-    }
+    
+    
     
     public int getId() {
         return id;
@@ -76,7 +101,9 @@ public class BlogEntry implements Serializable {
 
     @Override
     public String toString() {
-        return "BlogEntry: id=" + id + " Content:" + content + " User: " + u.getUserName();
+        return "BlogEntry{" + "id=" + id + ", user=" + user + ", dateOfCreation=" + dateOfCreation + ", title=" + title + ", content=" + content + '}';
     }
+    
+    
     
 }

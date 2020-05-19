@@ -6,10 +6,16 @@
 package entities;
 
 import java.io.Serializable;
+import java.util.List;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import org.mindrot.jbcrypt.BCrypt;
 
 /**
@@ -17,7 +23,7 @@ import org.mindrot.jbcrypt.BCrypt;
  * @author Ludvig
  */
 @Entity
-public class User1 implements Serializable {
+public class User implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @Id
@@ -25,19 +31,31 @@ public class User1 implements Serializable {
     private int id;
     private String userName;
     private String password;
-    private String role1;
+    private String role;
     
-    public User1() {
+    @OneToMany(mappedBy = "user")
+    private List<BlogEntry> blogEntries;
+    
+    public User() {
     }
     
-    public User1(String userName, String role1, String userPass) {
+    public User(String userName, String role, String password) {
         this.userName = userName;
-        this.role1 = role1;
-        this.password = BCrypt.hashpw(userPass, BCrypt.gensalt(12));
+        this.role = role;
+        this.password = password;
+        //this.password = BCrypt.hashpw(userPass, BCrypt.gensalt(12));
     }
     
-    public boolean verifyPassword(String plainText, String pw) {
+    /*public boolean verifyPassword(String plainText, String pw) {
         return (BCrypt.checkpw(plainText, password));
+    }*/
+    
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
     
     //this is for the DTO class
@@ -46,12 +64,12 @@ public class User1 implements Serializable {
         return password;
     }
 
-    public void setRole(String role1) {
-        this.role1 = role1;
+    public void setRole(String role) {
+        this.role = role;
     }
 
     public String getRole() {
-        return role1;
+        return role;
     }
 
     public String getUserName() {
@@ -62,13 +80,14 @@ public class User1 implements Serializable {
         this.userName = userName;
     }
 
-    public int getId() {
-        return id;
+    public List<BlogEntry> getBlogEntries() {
+        return blogEntries;
     }
 
-    public void setId(int id) {
-        this.id = id;
+    public void setBlogEntries(List<BlogEntry> blogEntries) {
+        this.blogEntries = blogEntries;
     }
+
 
 //    @Override
 //    public int hashCode() {

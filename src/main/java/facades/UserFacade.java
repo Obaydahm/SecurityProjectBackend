@@ -1,7 +1,7 @@
 package facades;
 
 import DTO.UserDTO;
-import entities.User1;
+import entities.User;
 import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -40,7 +40,7 @@ public class UserFacade {
     public UserDTO addUser(UserDTO u){
         EntityManager em = getEntityManager();
         
-        User1 user1 = new User1();
+        User user1 = new User();
         user1.getUserName();
         user1.getPassword();
         user1.getRole();
@@ -60,7 +60,7 @@ public class UserFacade {
     // Find a User
     public UserDTO getUser(Long user_id){
         EntityManager em = getEntityManager();
-        User1 userDTO = em.find(User1.class, user_id);
+        User userDTO = em.find(User.class, user_id);
         return new UserDTO(userDTO);
     }
         
@@ -68,8 +68,8 @@ public class UserFacade {
     public UserDTO getAllUsers(){
         EntityManager em = getEntityManager();
         try {
-            List<User1> user = em.createQuery("SELECT u FROM User U", User1.class).getResultList();
-            return new UserDTO((User1) user);
+            List<User> user = em.createQuery("SELECT u FROM User U", User.class).getResultList();
+            return new UserDTO((User) user);
         } finally {
             em.close();
         }

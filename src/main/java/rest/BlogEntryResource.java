@@ -7,7 +7,7 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import entities.BlogEntry;
-import entities.User1;
+import entities.User;
 import utils.EMF_Creator;
 import facades.BlogEntryFacade;
 import java.util.List;
@@ -15,6 +15,7 @@ import javax.naming.AuthenticationException;
 import entities.BlogEntry;
 import utils.EMF_Creator;
 import facades.BlogEntryFacade;
+import facades.BlogFacade;
 import java.util.List;
 import javax.persistence.EntityManagerFactory;
 import javax.ws.rs.Consumes;
@@ -29,7 +30,7 @@ import javax.ws.rs.core.Response;
 
 //Todo Remove or change relevant parts before ACTUAL use
 @Path("blogentry")
-public class BlogEntryRessource {
+public class BlogEntryResource {
 
     private static final EntityManagerFactory EMF = EMF_Creator.createEntityManagerFactory(
             "pu",
@@ -40,51 +41,62 @@ public class BlogEntryRessource {
 
     //An alternative way to get the EntityManagerFactory, whithout having to type the details all over the code
     //EMF = EMF_Creator.createEntityManagerFactory(DbSelector.DEV, Strategy.CREATE);
-    private static final BlogEntryFacade FACADE = BlogEntryFacade.getBlogEntryFacade(EMF);
+//    private static final BlogEntryFacade FACADE = BlogEntryFacade.getBlogEntryFacade(EMF);
+    private static final BlogFacade FACADE = BlogFacade.getBlogFacade(EMF);
     private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
-
+    
+    @GET
+    @Path("all")
+    @Produces({MediaType.APPLICATION_JSON})
+    public String getAllBlogEntries() {
+        List<BlogEntryDTO> allBlogEntries = FACADE.getAllBlogEntries();
+        return GSON.toJson(allBlogEntries);
+    }
+    
+    @GET
+    @Path("/getblogentriesbyuser/{id}")
+    @Produces({MediaType.APPLICATION_JSON})
+    public String getBlogEntriesByUser(@PathParam("id") int id) throws Exception {
+        List<BlogEntryDTO> be = FACADE.getBlogEntriesByUser(id);
+        if (be == null) {
+            return "{\"status\": 404, \"msg\":\"No information with provided id found\"}";
+        }
+        return GSON.toJson(be);
+    }
+    
+    @GET
+    @Path("/{id}")
+    @Produces({MediaType.APPLICATION_JSON})
+    public String getBlogEntryById(@PathParam("id") int id) throws Exception {
+        BlogEntry be = FACADE.getBlogEntryById(id);
+        if (be == null) {
+            return "{\"status\": 404, \"msg\":\"No information with provided id found\"}";
+        }
+        return GSON.toJson(new BlogEntryDTO(be));
+    }
+    
     @POST
     @Path("/add")
     @Produces({MediaType.APPLICATION_JSON})
     @Consumes({MediaType.APPLICATION_JSON})
-    public String postBlogEntry(String blogEntry) {
-        BlogEntryDTO blogEntryDTO = GSON.fromJson(blogEntry, BlogEntryDTO.class); //makes PersonDTO object from PersonDTO json string
-        BlogEntry added = FACADE.addBlogEntry(blogEntryDTO.getContent(), blogEntryDTO.getD(), blogEntryDTO.getU().getId());
-        return GSON.toJson(new BlogEntryDTO(added));//makes and returns PersonDTO from a person object, which has id
+    public String postBlogEntry(String json) {
+        JsonObject blogEntryJson = GSON.fromJson(json, JsonObject.class);
+        BlogEntryDTO blogEntry = FACADE.addBlogEntry(blogEntryJson.get("title").getAsString(), blogEntryJson.get("content").getAsString(), blogEntryJson.get("userId").getAsInt());
+        return GSON.toJson(blogEntry);
     }
 
-    @GET
-    @Path("/{id}")
-    @Produces({MediaType.APPLICATION_JSON})
-    public BlogEntry getBlogEntryById(@PathParam("id") int id) throws Exception {
-        BlogEntry be = FACADE.getBlogEntry(id);
-        if (be == null) {
-            throw new Exception("No information with provided id found");
-        }
-        return be;
-    }
-
-    @Path("delete/{id}")
     @DELETE
+    @Path("delete/{id}")
+    @Consumes(MediaType.APPLICATION_JSON)
     @Produces({MediaType.APPLICATION_JSON})
-    @Consumes({MediaType.APPLICATION_JSON})
     public String deleteBlogEntry(@PathParam("id") int id) throws Exception {
         BlogEntry be = FACADE.deleteBlogEntry(id);
 
         if (be == null) {
-            throw new Exception("No information found with provided id");
+            return "{\"status\": 404, \"msg\":\"No information with provided id found\"}";
         }
-        return be.getId() + " Du slettede denne information";
-    }
-
-    @Path("all")
-    @GET
-    @Produces({MediaType.APPLICATION_JSON})
-    public String getAllBlogEntries() {
-        List<BlogEntry> allBlogEntry = FACADE.getAllBlogEntries();
-        BlogEntryDTO allBlogEntryDTOs = new BlogEntryDTO(allBlogEntry);
-
-        return GSON.toJson(allBlogEntryDTOs.all);
+        
+        return "{\"status\": 200, \"msg\":\"Blog entry with id "+be.getId()+" has been deleted\"}";
     }
     
 //    // Create BlogEntry

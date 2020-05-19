@@ -47,8 +47,6 @@ public class CommentFacade {
         EntityManager em = getEntityManager();
         
         Comment co = new Comment();
-        co.getBe();
-        co.getU();
         co.getContent();
         
         try {

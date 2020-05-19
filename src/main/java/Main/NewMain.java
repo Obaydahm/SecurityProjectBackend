@@ -7,12 +7,12 @@ package Main;
 
 import entities.BlogEntry;
 import entities.Comment;
-import entities.User1;
+import entities.User;
 import facades.BlogEntryFacade;
 import facades.UserFacade;
 import java.sql.Array;
-import java.sql.Date;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import javax.naming.AuthenticationException;
 import javax.persistence.EntityManager;
@@ -34,11 +34,11 @@ public class NewMain {
             "jdbc:mysql://localhost:3307/sec",
             "dev",
             "ax2",
-            EMF_Creator.Strategy.CREATE); //DROP_AND_CREATE
+            EMF_Creator.Strategy.DROP_AND_CREATE); //DROP_AND_CREATE
     private static final BlogEntryFacade BLOG_FACADE = BlogEntryFacade.getBlogEntryFacade(EMF);
 
     public static void main(String[] args) throws AuthenticationException {
-        //Persistence.generateSchema("pu", null);
+        Persistence.generateSchema("pu", null);
         EntityManager em = EMF.createEntityManager();
 
         //blog facade test
@@ -47,23 +47,64 @@ public class NewMain {
         //List blogList = BLOG_FACADE.getAllBlogEntries();
         //System.out.println(blogList.get(2));
         //System.out.println(blogList.get(4));
-        List userBlogList = BLOG_FACADE.getAllBlogEntriesFromUser(1);
-        System.out.println(userBlogList.get(0));
+        //List userBlogList = BLOG_FACADE.getAllBlogEntriesFromUser(1);
+        //System.out.println(userBlogList.get(0));
         //System.out.println(userBlogList.get(1));
 
-        /*
-        User1 u1 = new User1("smollen", "user", "ewegg");
-        User1 u2 = new User1("TheSnarx", "user", "+wef32+0");
-        User1 u3 = new User1("AndersAnd", "user", "ipwef23f");
-        User1 admin = new User1("Admin", "admin", "admin");
         
+        User u1 = new User("smollen", "user", "ewegg");
+        User u2 = new User("TheSnarx", "user", "+wef32+0");
+        User u3 = new User("AndersAnd", "user", "ipwef23f");
+        User admin = new User("Admin", "admin", "admin");
+        
+        BlogEntry be1 = new BlogEntry("How to bla bla bla", "Just do bla bla bla", u1, new Date());
+        BlogEntry be2 = new BlogEntry("How to bake a brownie cake", "Just bake it", u1, new Date());
+        BlogEntry be3 = new BlogEntry("Learn React", "Just google how to react", u2, new Date());
+        BlogEntry be4 = new BlogEntry("How to bla bla bla", "Just do bla bla bla", u3, new Date());
+        BlogEntry be5 = new BlogEntry("What you need to know before buying a car", "The car has to have 4 wheelsssss", admin, new Date());
+        
+        Comment c1 = new Comment("Hello", be1, u1);
+        Comment c2 = new Comment("Hi", be1, u1);
+        Comment c3 = new Comment("Howdy", be1, u1);
+        Comment c4 = new Comment("afsdgfdg", be2, u3);
+        Comment c5 = new Comment("Hisdgdfg", be2, u2);
+        Comment c6 = new Comment("fgfghfghfgh", be3, u3);
+        Comment c7 = new Comment("dfgdfg", be3, u1);
+        Comment c8 = new Comment("nice post", be4, admin);
+        
+        try {
+            em.getTransaction().begin();
+            
+            em.persist(u1);
+            em.persist(u2);
+            em.persist(u3);
+            em.persist(admin);
+            em.persist(be1);
+            em.persist(be2);
+            em.persist(be3);
+            em.persist(be4);
+            em.persist(be5);
+            em.persist(c1);
+            em.persist(c2);
+            em.persist(c3);
+            em.persist(c4);
+            em.persist(c5);
+            em.persist(c6);
+            em.persist(c7);
+            
+            em.getTransaction().commit();
+        } finally {
+            em.close();
+        }
+        
+        
+        /* Ludvigs init
         BlogEntry be1 = new BlogEntry("Hej. Jeg er sej.", new Date(12, 4, 2200), u1);
         BlogEntry be2 = new BlogEntry("Whaaaat", new Date(3, 10, 1900), u2);
         BlogEntry be3 = new BlogEntry("Soief", new Date(22, 1, 2006), u3);
         BlogEntry be4 = new BlogEntry("WSor", new Date(30, 12, 2007), u1);
         BlogEntry be5 = new BlogEntry("W2ef", new Date(7, 5, 2009), u2);
         
-        Comment c1 = new Comment("Hi");
         Comment c2 = new Comment("Great blog");
         Comment c3 = new Comment("you suck");
         Comment c4 = new Comment("LMFAO xd");
@@ -122,11 +163,12 @@ public class NewMain {
             em.persist(c7);
             em.persist(c8);
             em.persist(c9);
-            em.persist(c10);          
+            em.persist(c10);
             
             em.getTransaction().commit();
         } finally {
             em.close();
-        }*/
+        }
+        */
     }
 }

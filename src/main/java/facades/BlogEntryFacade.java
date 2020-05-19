@@ -9,11 +9,11 @@ import DTO.BlogEntryDTO;
 import DTO.CommentDTO;
 import DTO.UserDTO;
 import entities.BlogEntry;
-import entities.User1;
+import entities.User;
 import java.sql.Date;
 import java.util.ArrayList;
 import entities.Comment;
-import entities.User1;
+import entities.User;
 import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -49,13 +49,13 @@ public class BlogEntryFacade {
     }
 
     // Create
-    public BlogEntry addBlogEntry(String content, Date d, int id) {
+    public BlogEntry addBlogEntry(String title, String content, int userId) {
         EntityManager em = getEntityManager();
 
-        User1 u1 = em.find(User1.class, id); //this is null, because you create a user with no generated id
+        User user = em.find(User.class, userId); //this is null, because you create a user with no generated id
         //System.out.println(u1.getId());
 
-        BlogEntry be = new BlogEntry(content, d, u1);
+        BlogEntry be = new BlogEntry(title, content, user, null);
         //be.setUser(u1);
 
         try {
@@ -92,46 +92,49 @@ public class BlogEntryFacade {
     }
 
     //edit
-    public BlogEntry editBlogEntry(int id, Date d, String content) {
+    public BlogEntry editBlogEntry(BlogEntry updatedBlogEntry) {
         EntityManager em = getEntityManager();
-        BlogEntry be = em.find(BlogEntry.class, id);
-
-        be.setDate(d);
-        be.setContent(content);
-
-        try {
+        BlogEntry oldBlogEntry = getBlogEntry(updatedBlogEntry.getId());
+        if(oldBlogEntry == null) return null;
+        
+        try{
             em.getTransaction().begin();
-            em.remove(be);
+            em.merge(updatedBlogEntry);
             em.getTransaction().commit();
-        } finally {
+        }catch(Exception e){
+            e.printStackTrace();
+        }finally{
             em.close();
         }
-        return be;
+        
+        
+        
+        return updatedBlogEntry;
     }
 
     // Get all 
-    public List getAllBlogEntries() {
+    public List<BlogEntry> getAllBlogEntries() {
         EntityManager em = getEntityManager();
         try {
-            List list =  em.createQuery("SELECT b FROM BlogEntry b", BlogEntry.class).getResultList();
+            List<BlogEntry> list =  em.createQuery("SELECT b FROM BlogEntry b", BlogEntry.class).getResultList();
             return list;
         } finally {
             em.close();
         }
     }
 
-
-    public List getAllBlogEntriesFromUser(int id /*String content*/) {
+    /*
+    public List getAllBlogEntriesFromUser(int id) {
         EntityManager em = getEntityManager();
         try {
-            List<BlogEntry> list = em.createQuery("SELECT b FROM BlogEntry b WHERE b.u = '" + id /*content*/ + "'" , BlogEntry.class).getResultList();
+            List<BlogEntry> list = em.createQuery("SELECT b FROM BlogEntry b WHERE b.u = '" + id + "'" , BlogEntry.class).getResultList();
             return list;
 
         }finally {
             em.close();
         }
     }
-
+    */
     // No of BlogEntries
     public long getBlogEntryCount() {
         EntityManager em = emf.createEntityManager();

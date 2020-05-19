@@ -11,6 +11,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 
 /**
@@ -24,35 +25,38 @@ public class Comment implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
-
-    @OneToOne (cascade = CascadeType.PERSIST)
-    private BlogEntry be;
-
-    @OneToOne (cascade = CascadeType.PERSIST)
-    private User1 u;
-
+    
+    @ManyToOne
+    private BlogEntry blogEntry;
+    
+    @OneToOne
+    private User user;
+    
     private String content;
 
     public Comment() {
     }
 
-    public Comment(int id, BlogEntry be, User1 u) {
-        this.id = id;
-        this.be = be;
-        this.u = u;
-    }
-
-    public Comment(String content) {
+    public Comment(String content, BlogEntry blogEntry, User user) {
+        this.blogEntry = blogEntry;
+        this.user = user;
         this.content = content;
-
     }
 
-    public BlogEntry getBe() {
-        return be;
+    public BlogEntry getBlogEntry() {
+        return blogEntry;
     }
 
-    public User1 getU() {
-        return u;
+    public void setBlogEntry(BlogEntry blogEntry) {
+        this.blogEntry = blogEntry;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
     }
 
     public String getContent() {
@@ -63,13 +67,12 @@ public class Comment implements Serializable {
         this.content = content;
     }
 
-    public void setBlogEntry(BlogEntry be) {
-        this.be = be;
+    @Override
+    public String toString() {
+        return "Comment{" + "id=" + id + ", user=" + user.getUserName() + ", content=" + content + '}';
     }
 
-    public void setUser(User1 u) {
-        this.u = u;
-    }
+    
 
     public int getId() {
         return id;

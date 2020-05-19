@@ -5,7 +5,7 @@
  */
 package DTO;
 
-import entities.User1;
+import entities.User;
 
 /**
  *
@@ -15,14 +15,16 @@ public class UserDTO {
     
     private int id;
     private String userName;
-    private String password;
-    private String role1;
     
-    public UserDTO(User1 u){
+    public UserDTO(User u){
         this.id = u.getId();
         this.userName = u.getUserName();
-        this.password = u.getPassword();
-        this.role1 = u.getRole();
     }
+
+    @Override
+    public String toString() {
+        return "UserDTO{" + "id=" + id + ", userName=" + userName + '}';
+    }
+    
     
 }

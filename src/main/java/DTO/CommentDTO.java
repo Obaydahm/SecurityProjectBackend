@@ -7,7 +7,7 @@ package DTO;
 
 import entities.BlogEntry;
 import entities.Comment;
-import entities.User1;
+import entities.User;
 
 /**
  *
@@ -16,16 +16,36 @@ import entities.User1;
 public class CommentDTO {
     
     private int id;
-    private BlogEntry be;
-    private User1 u;
+    private String userName;
     private String content;
 
     public CommentDTO(Comment c) {
         this.id = c.getId();
-        this.be = c.getBe();
-        this.u = c.getU();
-        this.content = be.getContent();
+        this.userName = c.getUser().getUserName();
+        this.content = c.getContent();
     }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public String getContent() {
+        return content;
+    }
+
+    public void setContent(String content) {
+        this.content = content;
+    }
+
+    @Override
+    public String toString() {
+        return "CommentDTO{" + "id=" + id + ", userName=" + userName + ", content=" + content + '}';
+    }
+    
     
     
 }
