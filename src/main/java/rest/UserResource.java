@@ -3,9 +3,12 @@ package rest;
 import DTO.UserDTO;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import facades.UserFacade;
 import utils.EMF_Creator;
 import java.util.List;
+import javax.naming.AuthenticationException;
 import javax.persistence.EntityManagerFactory;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
@@ -50,15 +53,13 @@ public class UserResource {
 
     // Delete user
     @Path("/{id}")
-    @DELETE   
+    @DELETE
     @Produces(MediaType.APPLICATION_JSON)
-    public UserDTO userDTO(@PathParam("id") Long id){
+    public UserDTO userDTO(@PathParam("id") Long id) {
         UserDTO deletedUser = FACADE.remove(id);
         return deletedUser;
     }
-    
-    
-    
+
     // Find a User
     @Path("id/{id}")
     @GET
@@ -72,10 +73,10 @@ public class UserResource {
     @Path("all")
     @GET
     @Produces({MediaType.APPLICATION_JSON})
-    public List<UserDTO> getAllUsers(){
+    public List<UserDTO> getAllUsers() {
         return (List<UserDTO>) FACADE.getAllUsers();//.getAll();
     }
-            
+
     @Path("count")
     @GET
     @Produces({MediaType.APPLICATION_JSON})
@@ -85,4 +86,21 @@ public class UserResource {
         return "{\"count\":" + count + "}";  //Done manually so no need for a DTO
     }
 
+    @Path("login")
+    @POST
+    @Consumes({MediaType.APPLICATION_JSON})
+    @Produces({MediaType.APPLICATION_JSON})
+    public String login(String jsonString) throws AuthenticationException {
+        JsonObject json = new JsonParser().parse(jsonString).getAsJsonObject();
+        String username = json.get("username").getAsString();
+        String password = json.get("password").getAsString();
+        try {
+            FACADE.getVeryfiedUser(username, password);
+        } catch (AuthenticationException e) {
+            e.getMessage();
+            return "wrong password or username";
+
+        }
+        return "Login succesful";
+    }
 }

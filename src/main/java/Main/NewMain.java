@@ -50,19 +50,17 @@ public class NewMain {
         //List userBlogList = BLOG_FACADE.getAllBlogEntriesFromUser(1);
         //System.out.println(userBlogList.get(0));
         //System.out.println(userBlogList.get(1));
-
-        
         User u1 = new User("smollen", "user", "ewegg");
         User u2 = new User("TheSnarx", "user", "+wef32+0");
         User u3 = new User("AndersAnd", "user", "ipwef23f");
         User admin = new User("Admin", "admin", "admin");
-        
+
         BlogEntry be1 = new BlogEntry("How to bla bla bla", "Just do bla bla bla", u1, new Date());
         BlogEntry be2 = new BlogEntry("How to bake a brownie cake", "Just bake it", u1, new Date());
         BlogEntry be3 = new BlogEntry("Learn React", "Just google how to react", u2, new Date());
         BlogEntry be4 = new BlogEntry("How to bla bla bla", "Just do bla bla bla", u3, new Date());
         BlogEntry be5 = new BlogEntry("What you need to know before buying a car", "The car has to have 4 wheelsssss", admin, new Date());
-        
+
         Comment c1 = new Comment("Hello", be1, u1);
         Comment c2 = new Comment("Hi", be1, u1);
         Comment c3 = new Comment("Howdy", be1, u1);
@@ -71,10 +69,10 @@ public class NewMain {
         Comment c6 = new Comment("fgfghfghfgh", be3, u3);
         Comment c7 = new Comment("dfgdfg", be3, u1);
         Comment c8 = new Comment("nice post", be4, admin);
-        
+
         try {
             em.getTransaction().begin();
-            
+
             em.persist(u1);
             em.persist(u2);
             em.persist(u3);
@@ -91,13 +89,12 @@ public class NewMain {
             em.persist(c5);
             em.persist(c6);
             em.persist(c7);
-            
+
             em.getTransaction().commit();
         } finally {
             em.close();
         }
-        
-        
+
         /* Ludvigs init
         BlogEntry be1 = new BlogEntry("Hej. Jeg er sej.", new Date(12, 4, 2200), u1);
         BlogEntry be2 = new BlogEntry("Whaaaat", new Date(3, 10, 1900), u2);
@@ -169,6 +166,6 @@ public class NewMain {
         } finally {
             em.close();
         }
-        */
+         */
     }
 }
