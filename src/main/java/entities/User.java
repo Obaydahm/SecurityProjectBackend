@@ -32,24 +32,23 @@ public class User implements Serializable {
     private String userName;
     private String password;
     private String role;
-    
+
     @OneToMany(mappedBy = "user")
     private List<BlogEntry> blogEntries;
-    
+
     public User() {
     }
-    
+
     public User(String userName, String role, String password) {
         this.userName = userName;
         this.role = role;
-        this.password = password;
-        //this.password = BCrypt.hashpw(userPass, BCrypt.gensalt(12));
+        this.password = BCrypt.hashpw(password, BCrypt.gensalt(12));
     }
-    
-    /*public boolean verifyPassword(String plainText, String pw) {
+
+    public boolean verifyPassword(String plainText, String pw) {
         return (BCrypt.checkpw(plainText, password));
-    }*/
-    
+    }
+
     public int getId() {
         return id;
     }
@@ -57,10 +56,10 @@ public class User implements Serializable {
     public void setId(int id) {
         this.id = id;
     }
-    
+
     //this is for the DTO class
     //but does it make sense to have this one?
-    public String getPassword(){
+    public String getPassword() {
         return password;
     }
 
@@ -87,7 +86,6 @@ public class User implements Serializable {
     public void setBlogEntries(List<BlogEntry> blogEntries) {
         this.blogEntries = blogEntries;
     }
-
 
 //    @Override
 //    public int hashCode() {

@@ -3,6 +3,7 @@ package facades;
 import DTO.UserDTO;
 import entities.User;
 import java.util.List;
+import javax.naming.AuthenticationException;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 
@@ -101,6 +102,24 @@ public class UserFacade {
         }
         
     }
+    
+    public User getVeryfiedUser(String username, String password) throws AuthenticationException {
+        EntityManager em = emf.createEntityManager();
+        User u1;
+        try {
+            em.getTransaction().begin();
+            u1 = em.createQuery("SELECT a FROM User a WHERE a.userName=:name", User.class).setParameter("name", username).getSingleResult();
+            if (u1 == null || !u1.verifyPassword(password, u1.getPassword())) {
+                throw new AuthenticationException("Invalid user name or password");
+            }
+        } finally {
+            em.close();
+        }
+        return u1;
+
+    }
+
+
 }
 
 
