@@ -53,8 +53,10 @@ public class NewMain {
         //System.out.println(userBlogList.get(0));
         //System.out.println(userBlogList.get(1));
         
-        COMMENT_FACADE.deleteComment(7);
-
+        //COMMENT_FACADE.deleteComment(7);
+        COMMENT_FACADE.addComment("Wow great post, pls maek more.", 2, 3);
+        
+        
         /*
         User u1 = new User("smollen", "user", "ewegg");
         User u2 = new User("TheSnarx", "user", "+wef32+0");

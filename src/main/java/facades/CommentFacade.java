@@ -9,6 +9,7 @@ import DTO.CommentDTO;
 import DTO.UserDTO;
 import entities.BlogEntry;
 import entities.Comment;
+import entities.User;
 import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -44,11 +45,13 @@ public class CommentFacade {
     }
 
     // Create 
-    public CommentDTO addComment(CommentDTO c) {
+    public CommentDTO addComment(String content, int blogEntryId, int userId) {
         EntityManager em = getEntityManager();
 
-        Comment co = new Comment();
-        co.getContent();
+        BlogEntry be = em.find(BlogEntry.class, blogEntryId);
+        User user = em.find(User.class, userId);
+        
+        Comment co = new Comment(content, be, user);
 
         try {
             em.getTransaction().begin();

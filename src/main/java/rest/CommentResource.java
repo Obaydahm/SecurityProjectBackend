@@ -51,8 +51,8 @@ public class CommentResource {
     @POST
     @Produces({MediaType.APPLICATION_JSON})
     @Consumes({MediaType.APPLICATION_JSON})
-    public String createComment(CommentDTO commentDTO) {
-        FACADE.addComment(commentDTO);
+    public String createComment(String content, int beId, int uId) {
+        FACADE.addComment(content, beId, uId);
         return "{\"msg\":\"Comment created\"}";
     }
 
