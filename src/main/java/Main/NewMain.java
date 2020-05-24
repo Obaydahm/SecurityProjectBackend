@@ -9,6 +9,7 @@ import entities.BlogEntry;
 import entities.Comment;
 import entities.User;
 import facades.BlogEntryFacade;
+import facades.CommentFacade;
 import facades.UserFacade;
 import java.sql.Array;
 import java.util.ArrayList;
@@ -34,11 +35,12 @@ public class NewMain {
             "jdbc:mysql://localhost:3307/sec",
             "dev",
             "ax2",
-            EMF_Creator.Strategy.DROP_AND_CREATE); //DROP_AND_CREATE
+            EMF_Creator.Strategy.CREATE); //DROP_AND_CREATE
     private static final BlogEntryFacade BLOG_FACADE = BlogEntryFacade.getBlogEntryFacade(EMF);
+    private static final CommentFacade COMMENT_FACADE = CommentFacade.getCommentFacade(EMF);
 
     public static void main(String[] args) throws AuthenticationException {
-        Persistence.generateSchema("pu", null);
+        //Persistence.generateSchema("pu", null);
         EntityManager em = EMF.createEntityManager();
 
         //blog facade test
@@ -50,8 +52,10 @@ public class NewMain {
         //List userBlogList = BLOG_FACADE.getAllBlogEntriesFromUser(1);
         //System.out.println(userBlogList.get(0));
         //System.out.println(userBlogList.get(1));
-
         
+        COMMENT_FACADE.deleteComment(7);
+
+        /*
         User u1 = new User("smollen", "user", "ewegg");
         User u2 = new User("TheSnarx", "user", "+wef32+0");
         User u3 = new User("AndersAnd", "user", "ipwef23f");
@@ -96,7 +100,7 @@ public class NewMain {
         } finally {
             em.close();
         }
-        
+        */
         
         /* Ludvigs init
         BlogEntry be1 = new BlogEntry("Hej. Jeg er sej.", new Date(12, 4, 2200), u1);

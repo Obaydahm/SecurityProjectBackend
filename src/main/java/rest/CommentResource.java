@@ -7,6 +7,7 @@ package rest;
 
 import DTO.CommentDTO;
 import DTO.UserDTO;
+import entities.Comment;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import facades.CommentFacade;
@@ -76,8 +77,8 @@ public class CommentResource {
     @Path("/{id}")
     @DELETE
     @Produces(MediaType.APPLICATION_JSON)
-    public CommentDTO commentDTO(@PathParam("id") Long id){
-        CommentDTO deletedComment = FACADE.remove(id);
+    public Comment commentDTO(@PathParam("id") int id){
+        Comment deletedComment = FACADE.deleteComment(id);
         return deletedComment;
     }
     

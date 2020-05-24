@@ -7,6 +7,7 @@ package facades;
 
 import DTO.CommentDTO;
 import DTO.UserDTO;
+import entities.BlogEntry;
 import entities.Comment;
 import java.util.List;
 import javax.persistence.EntityManager;
@@ -17,7 +18,7 @@ import javax.persistence.EntityManagerFactory;
  * @author Henrik
  */
 public class CommentFacade {
-    
+
     private static CommentFacade instance;
     private static EntityManagerFactory emf;
 
@@ -43,12 +44,12 @@ public class CommentFacade {
     }
 
     // Create 
-    public CommentDTO addComment(CommentDTO c){
+    public CommentDTO addComment(CommentDTO c) {
         EntityManager em = getEntityManager();
-        
+
         Comment co = new Comment();
         co.getContent();
-        
+
         try {
             em.getTransaction().begin();
             em.persist(co);
@@ -58,25 +59,26 @@ public class CommentFacade {
         }
         return new CommentDTO(co);
     }
-    
+
     // Find a Comment
-    public CommentDTO getComments(Long comment_id){
+    public CommentDTO getComments(Long comment_id) {
         EntityManager em = getEntityManager();
         Comment commentDTO = em.find(Comment.class, comment_id);
         return new CommentDTO(commentDTO);
     }
-    
+
     // Get all comments
-    public CommentDTO getAllComments(){
+    public CommentDTO getAllComments() {
         EntityManager em = getEntityManager();
-        try{
+        try {
             List<Comment> comment = em.createQuery("SELECT c FROM Comment c", Comment.class).getResultList();
             return new CommentDTO((Comment) comment);
-        }finally {
+        } finally {
             em.close();
         }
     }
-    
+
+    /*
     // Remove id
     public CommentDTO remove(long id){
         EntityManager em = getEntityManager();
@@ -91,7 +93,21 @@ public class CommentFacade {
             em.close();
         }
     }
-    
+     */
+    public Comment deleteComment(int id) {
+        EntityManager em = getEntityManager();
+        Comment c = em.find(Comment.class, id);
+
+        try {
+            em.getTransaction().begin();
+            em.remove(c);
+            em.getTransaction().commit();
+        } finally {
+            em.close();
+        }
+        return c;
+    }
+
     // No of Comments
     public long getCommentCount() {
         EntityManager em = emf.createEntityManager();
