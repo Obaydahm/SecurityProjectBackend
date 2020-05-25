@@ -1,6 +1,7 @@
 package rest;
 
 import DTO.BlogEntryDTO;
+import DTO.CommentDTO;
 import DTO.UserDTO;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -9,12 +10,11 @@ import com.google.gson.JsonParser;
 import entities.BlogEntry;
 import entities.User;
 import utils.EMF_Creator;
-import facades.BlogEntryFacade;
 import java.util.List;
 import javax.naming.AuthenticationException;
 import entities.BlogEntry;
+import entities.Comment;
 import utils.EMF_Creator;
-import facades.BlogEntryFacade;
 import facades.BlogFacade;
 import java.util.List;
 import javax.persistence.EntityManagerFactory;
@@ -41,7 +41,6 @@ public class BlogEntryResource {
 
     //An alternative way to get the EntityManagerFactory, whithout having to type the details all over the code
     //EMF = EMF_Creator.createEntityManagerFactory(DbSelector.DEV, Strategy.CREATE);
-//    private static final BlogEntryFacade FACADE = BlogEntryFacade.getBlogEntryFacade(EMF);
     private static final BlogFacade FACADE = BlogFacade.getBlogFacade(EMF);
     private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
     
@@ -49,12 +48,11 @@ public class BlogEntryResource {
     @Path("all")
     @Produces({MediaType.APPLICATION_JSON})
     public String getAllBlogEntries() {
-        List<BlogEntryDTO> allBlogEntries = FACADE.getAllBlogEntries();
-        return GSON.toJson(allBlogEntries);
+        return GSON.toJson(FACADE.getAllBlogEntries());
     }
     
     @GET
-    @Path("/getblogentriesbyuser/{id}")
+    @Path("getblogentriesbyuser/{id}")
     @Produces({MediaType.APPLICATION_JSON})
     public String getBlogEntriesByUser(@PathParam("id") int id) throws Exception {
         List<BlogEntryDTO> be = FACADE.getBlogEntriesByUser(id);
@@ -65,7 +63,7 @@ public class BlogEntryResource {
     }
     
     @GET
-    @Path("/{id}")
+    @Path("{id}")
     @Produces({MediaType.APPLICATION_JSON})
     public String getBlogEntryById(@PathParam("id") int id) throws Exception {
         BlogEntry be = FACADE.getBlogEntryById(id);
@@ -76,7 +74,7 @@ public class BlogEntryResource {
     }
     
     @POST
-    @Path("/add")
+    @Path("add")
     @Produces({MediaType.APPLICATION_JSON})
     @Consumes({MediaType.APPLICATION_JSON})
     public String postBlogEntry(String json) {
@@ -97,6 +95,32 @@ public class BlogEntryResource {
         }
         
         return "{\"status\": 200, \"msg\":\"Blog entry with id "+be.getId()+" has been deleted\"}";
+    }
+    
+    @POST
+    @Path("addcomment")
+    @Produces({MediaType.APPLICATION_JSON})
+    @Consumes({MediaType.APPLICATION_JSON})
+    public String addBlogEntry(String json) {
+        JsonObject commentJson = GSON.fromJson(json, JsonObject.class);
+        int blogEntryId = commentJson.get("blogEntryId").getAsInt();
+        int userId = commentJson.get("userId").getAsInt();
+        String content = commentJson.get("content").getAsString();
+        return GSON.toJson(FACADE.addComment(blogEntryId, userId, content));
+    }
+    
+    @DELETE
+    @Path("deletecomment/{id}")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces({MediaType.APPLICATION_JSON})
+    public String deleteComment(@PathParam("id") int id) throws Exception {
+        Comment c = FACADE.deleteComment(id);
+
+        if (c == null) {
+            return "{\"status\": 404, \"msg\":\"No information with provided id found\"}";
+        }
+        
+        return "{\"status\": 200, \"msg\":\"OK\"}";
     }
     
 //    // Create BlogEntry

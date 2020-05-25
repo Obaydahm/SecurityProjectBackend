@@ -8,8 +8,7 @@ package Main;
 import entities.BlogEntry;
 import entities.Comment;
 import entities.User;
-import facades.BlogEntryFacade;
-import facades.CommentFacade;
+import facades.BlogFacade;
 import facades.UserFacade;
 import java.sql.Array;
 import java.util.ArrayList;
@@ -36,8 +35,7 @@ public class NewMain {
             "dev",
             "ax2",
             EMF_Creator.Strategy.CREATE); //DROP_AND_CREATE
-    private static final BlogEntryFacade BLOG_FACADE = BlogEntryFacade.getBlogEntryFacade(EMF);
-    private static final CommentFacade COMMENT_FACADE = CommentFacade.getCommentFacade(EMF);
+    private static final BlogFacade BLOG_FACADE = BlogFacade.getBlogFacade(EMF);
 
     public static void main(String[] args) throws AuthenticationException {
         //Persistence.generateSchema("pu", null);
@@ -54,7 +52,6 @@ public class NewMain {
         //System.out.println(userBlogList.get(1));
         
         //COMMENT_FACADE.deleteComment(7);
-        COMMENT_FACADE.addComment("Wow great post, pls maek more.", 2, 3);
         
         
         /*

@@ -17,13 +17,13 @@ public class CommentDTO {
     
     private int id;
     private int blogEntryId;
-    private String userName;
+    private UserDTO user;
     private String content;
 
     public CommentDTO(Comment c) {
         this.id = c.getId();
         this.blogEntryId = c.getBlogEntry().getId();
-        this.userName = c.getUser().getUserName();
+        this.user = new UserDTO(c.getUser());
         this.content = c.getContent();
     }
 
@@ -43,14 +43,6 @@ public class CommentDTO {
         this.blogEntryId = blogEntryId;
     }
 
-    public String getUserName() {
-        return userName;
-    }
-
-    public void setUserName(String userName) {
-        this.userName = userName;
-    }
-
     public String getContent() {
         return content;
     }
@@ -61,7 +53,7 @@ public class CommentDTO {
 
     @Override
     public String toString() {
-        return "CommentDTO{" + "id=" + id + ", userName=" + userName + ", content=" + content + '}';
+        return "CommentDTO{" + "id=" + id + ", userId=" + user + ", content=" + content + '}';
     }
     
     
