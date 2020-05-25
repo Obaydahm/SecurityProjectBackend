@@ -16,11 +16,13 @@ import entities.User;
 public class CommentDTO {
     
     private int id;
+    private int blogEntryId;
     private String userName;
     private String content;
 
     public CommentDTO(Comment c) {
         this.id = c.getId();
+        this.blogEntryId = c.getBlogEntry().getId();
         this.userName = c.getUser().getUserName();
         this.content = c.getContent();
     }
@@ -31,6 +33,22 @@ public class CommentDTO {
 
     public void setId(int id) {
         this.id = id;
+    }
+
+    public int getBlogEntryId() {
+        return blogEntryId;
+    }
+
+    public void setBlogEntryId(int blogEntryId) {
+        this.blogEntryId = blogEntryId;
+    }
+
+    public String getUserName() {
+        return userName;
+    }
+
+    public void setUserName(String userName) {
+        this.userName = userName;
     }
 
     public String getContent() {
