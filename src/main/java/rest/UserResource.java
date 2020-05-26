@@ -64,7 +64,7 @@ public class UserResource {
     @Path("id/{id}")
     @GET
     @Produces({MediaType.APPLICATION_JSON})
-    public UserDTO findUser(@PathParam("id") Long id) {
+    public UserDTO findUser(@PathParam("id") int id) {
         UserDTO u = FACADE.getUser(id);
         return u;
     }

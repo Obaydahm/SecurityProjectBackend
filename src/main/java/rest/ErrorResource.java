@@ -48,7 +48,7 @@ public class ErrorResource {
     public String getJson(@PathParam("id") int id) throws PersonNotFoundException{
         Person found = persons.get(id);
         if (found == null){
-        throw new PersonNotFoundException("Person with provided Id not found");
+        throw new PersonNotFoundException("Person with provided Id not found", 404);
         }            
         return gson.toJson(found);
 

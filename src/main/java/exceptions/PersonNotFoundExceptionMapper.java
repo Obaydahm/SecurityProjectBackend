@@ -1,4 +1,4 @@
-package exceptions;
+/*package exceptions;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -26,3 +26,4 @@ public class PersonNotFoundExceptionMapper implements ExceptionMapper<PersonNotF
                 .build();
     }
 }
+*/
