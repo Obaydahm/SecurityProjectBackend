@@ -5,6 +5,7 @@
  */
 package Main;
 
+import DTO.UserDTO;
 import entities.BlogEntry;
 import entities.Comment;
 import entities.User;
@@ -21,6 +22,7 @@ import javax.naming.AuthenticationException;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
+import org.mindrot.jbcrypt.BCrypt;
 import utils.EMF_Creator;
 
 /**
@@ -40,6 +42,7 @@ public class NewMain {
             EMF_Creator.Strategy.CREATE); //DROP_AND_CREATE
 
     private static final FlawedBlogFacade FLAWED_BLOG_FACADE = FlawedBlogFacade.getFlawedBlogFacade(EMF);
+    private static final BlogFacade BLOG_FACADE = BlogFacade.getBlogFacade(EMF);
     //private static final CommentFacade COMMENT_FACADE = CommentFacade.getCommentFacade(EMF);
     private static final FlawedUserFacade FLAWED_USER_FACADE = FlawedUserFacade.getFlawedUserFacade(EMF);
     private static final UserFacade USER_FACADE = UserFacade.getUserFacade(EMF);
@@ -60,9 +63,15 @@ public class NewMain {
         //System.out.println(userBlogList.get(1));
         
         //COMMENT_FACADE.deleteComment(7);
-        //COMMENT_FACADE.addComment("1 OR 1=1", 2, 3);
+        //BLOG_FACADE.addBlogEntry("Hvorfor sker det?", "Jeg kan simpelthen ikke tro at det sker", 3);
+        //BLOG_FACADE.addComment( 2, 4, "hhhe");
+        //User u = new User("DarkCrystalFan96", "user", "gelfling");
+        //UserDTO uDTO = new UserDTO(u);
+        //USER_FACADE.addUser(uDTO);
 
-        FLAWED_USER_FACADE.getVeryfiedUser("smollen", "pwinef");
+        //System.out.println(BCrypt.hashpw("ewegg", BCrypt.gensalt(12)));
+        
+        System.out.println(USER_FACADE.getVeryfiedUser("DarkCrystalFan96", "gelfling").getUserName());
         //FLAWED_USER_FACADE.getVeryfiedUser("and or 1=1 and email like('%bender%')", "pwinef");
         
         //FLAWED_BLOG_FACADE.getBlogEntriesByUser("1 OR 1=1");
@@ -112,8 +121,7 @@ public class NewMain {
         } finally {
             em.close();
         }
-<<<<<<< HEAD
-        */
+
 
         /* Ludvigs init
         BlogEntry be1 = new BlogEntry("Hej. Jeg er sej.", new Date(12, 4, 2200), u1);

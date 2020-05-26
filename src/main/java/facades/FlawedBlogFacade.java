@@ -6,6 +6,7 @@
 package facades;
 
 import DTO.BlogEntryDTO;
+import DTO.CommentDTO;
 import entities.BlogEntry;
 import entities.Comment;
 import entities.User;
@@ -132,6 +133,38 @@ public class FlawedBlogFacade {
         return oldBlogEntry;
     }
 
+        // Create 
+    public CommentDTO addComment(int blogEntryId, int userId, String content) {
+        EntityManager em = getEntityManager();
+
+        BlogEntry be = em.find(BlogEntry.class, blogEntryId);
+        User user = em.find(User.class, userId);
+        Comment c = new Comment(content, be, user);
+        try {
+            em.getTransaction().begin();
+            em.persist(c);
+            em.getTransaction().commit();
+        } finally {
+            em.close();
+        }
+        return new CommentDTO(c);
+    }
+    
+    public Comment deleteComment(int id) {
+        EntityManager em = getEntityManager();
+        Comment c = em.find(Comment.class, id);
+
+        try {
+            em.getTransaction().begin();
+            em.remove(c);
+            em.getTransaction().commit();
+        }catch(Exception e){
+            return null;
+        } finally {
+            em.close();
+        }
+        return c;
+    }
     
     public static void main(String[] args) {
         EntityManagerFactory EMF = EMF_Creator.createEntityManagerFactory(EMF_Creator.DbSelector.DEV, EMF_Creator.Strategy.CREATE);

@@ -42,9 +42,12 @@ public class UserFacade {
         EntityManager em = getEntityManager();
         
         User user1 = new User();
-        user1.getUserName();
-        user1.getPassword();
-        user1.getRole();
+        //System.out.println(u.getUserName());
+        user1.setUserName(u.getUserName());
+        //System.out.println(u.getPassword());
+        user1.setPassword(u.getPassword());
+        user1.setRole(u.getRole());
+        //System.out.println(u.getRole());
         
         try{
             em.getTransaction().begin();

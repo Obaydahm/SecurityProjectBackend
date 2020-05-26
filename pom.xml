@@ -102,13 +102,6 @@
             <type>jar</type>
         </dependency>
         <dependency>
-            <groupId>dat.sem3</groupId>
-            <artifactId>securitybackendflaws</artifactId>
-            <version>1.0.1</version>
-            <scope>test</scope>
-            <type>war</type>
-        </dependency>
-        <dependency>
             <groupId>javax</groupId>
             <artifactId>javaee-web-api</artifactId>
             <version>7.0</version>

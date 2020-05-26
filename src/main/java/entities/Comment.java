@@ -72,8 +72,6 @@ public class Comment implements Serializable {
         return "Comment{" + "id=" + id + ", user=" + user.getUserName() + ", content=" + content + '}';
     }
 
-    
-
     public int getId() {
         return id;
     }
