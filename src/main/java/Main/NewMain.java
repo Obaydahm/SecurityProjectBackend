@@ -69,10 +69,13 @@ public class NewMain {
         //UserDTO uDTO = new UserDTO(u);
         //USER_FACADE.addUser(uDTO);
 
+        //USER_FACADE.getVeryfiedUser("' or 1=1;", "anything");
+        //USER_FACADE.getVeryfiedUser("DarkCrystalFan96", "gelfling");
+        
         //System.out.println(BCrypt.hashpw("ewegg", BCrypt.gensalt(12)));
         
         //System.out.println(USER_FACADE.getVeryfiedUser("DarkCrystalFan96", "gelfling").getUserName());
-        //FLAWED_USER_FACADE.getVeryfiedUser("and or 1=1 and email like('%bender%')", "pwinef");
+        FLAWED_USER_FACADE.getVeryfiedUser("'", "pwinef");
         
         //FLAWED_BLOG_FACADE.getBlogEntriesByUser("1 OR 1=1");
         
