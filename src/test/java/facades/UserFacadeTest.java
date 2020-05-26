@@ -2,15 +2,14 @@ package facades;
 
 import utils.EMF_Creator;
 import entities.User;
+import java.util.ArrayList;
+import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.AfterEach;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import utils.Settings;
 import utils.EMF_Creator.DbSelector;
 import utils.EMF_Creator.Strategy;
 
@@ -18,66 +17,50 @@ import utils.EMF_Creator.Strategy;
 //@Disabled
 public class UserFacadeTest {
 
-    private static EntityManagerFactory emf;
-    private static UserFacade facade;
+    private static EntityManagerFactory EMF;
+    private static UserFacade FACADE;
+    private static List<User> USERS = new ArrayList();
 
     public UserFacadeTest() {
     }
 
-    //@BeforeAll
-    public static void setUpClass() {
-        emf = EMF_Creator.createEntityManagerFactory(
-                "pu",
-                "jdbc:mysql://localhost:3307/startcode_test",
-                "dev",
-                "ax2",
-                EMF_Creator.Strategy.CREATE);
-        facade = UserFacade.getFacadeExample(emf);
-    }
-
-    /*   **** HINT **** 
-        A better way to handle configuration values, compared to the UNUSED example above, is to store those values
-        ONE COMMON place accessible from anywhere.
-        The file config.properties and the corresponding helper class utils.Settings is added just to do that. 
-        See below for how to use these files. This is our RECOMENDED strategy
-     */
     @BeforeAll
-    public static void setUpClassV2() {
-       emf = EMF_Creator.createEntityManagerFactory(DbSelector.TEST,Strategy.DROP_AND_CREATE);
-       facade = UserFacade.getFacadeExample(emf);
+    public static void setUpClassV2(){
+        EMF = EMF_Creator.createEntityManagerFactory(DbSelector.TEST,Strategy.DROP_AND_CREATE);
+        FACADE = UserFacade.getUserFacade(EMF);
     }
+    
 
-    @AfterAll
-    public static void tearDownClass() {
-//        Clean up database after test is done or use a persistence unit with drop-and-create to start up clean on every test
+    @BeforeEach
+    public void setUp() {
+        EntityManager em = EMF.createEntityManager();
+        User f1 = new User();
+        User f2 = new User();
+        
+        USERS.add(f1);
+        USERS.add(f2);
+        
+        try {
+            em.getTransaction().begin();
+            em.createNamedQuery("Facade.deleteAllRows").executeUpdate();
+            em.persist(f1);
+            em.persist(f2);
+            em.getTransaction().commit();
+        } finally {
+            em.close();
+        }
     }
-
-    // Setup the DataBase in a known state BEFORE EACH TEST
-    //TODO -- Make sure to change the script below to use YOUR OWN entity class
-//    @BeforeEach
-//    public void setUp() {
-//        EntityManager em = emf.createEntityManager();
-//        try {
-//            em.getTransaction().begin();
-//            em.createNamedQuery("RenameMe.deleteAllRows").executeUpdate();
-//            em.persist(new RenameMe("Some txt", "More text"));
-//            em.persist(new RenameMe("aaa", "bbb"));
-//
-//            em.getTransaction().commit();
-//        } finally {
-//            em.close();
-//        }
-//    }
-//
 //    @AfterEach
 //    public void tearDown() {
-////        Remove any data after each test was run
+//        Remove any data after each test was run
 //    }
-//
-//    // TODO: Delete or change this method 
-//    @Test
-//    public void testAFacadeMethod() {
-//        assertEquals(2, facade.getRenameMeCount(), "Expects two rows in the database");
-//    }
+
+    @Test
+    public void testAFacadeMethod() {
+        int exp = USERS.size();
+        
+        int act = FACADE.getAllUsers().size();
+        assertEquals(exp, act);
+    }
 
 }

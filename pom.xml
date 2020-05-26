@@ -20,6 +20,7 @@
     </properties>
     
     <dependencies>
+        
         <dependency>
             <groupId>org.eclipse.persistence</groupId>
             <artifactId>org.eclipse.persistence.core</artifactId>
@@ -99,6 +100,13 @@
             <artifactId>jbcrypt</artifactId>
             <version>0.4</version>
             <type>jar</type>
+        </dependency>
+        <dependency>
+            <groupId>dat.sem3</groupId>
+            <artifactId>securitybackendflaws</artifactId>
+            <version>1.0.1</version>
+            <scope>test</scope>
+            <type>war</type>
         </dependency>
         <dependency>
             <groupId>javax</groupId>
