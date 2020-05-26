@@ -14,23 +14,20 @@ import javax.ws.rs.ext.Provider;
 public class GenericExceptionMapper implements ExceptionMapper<Throwable> {
 
     static Gson gson = new GsonBuilder().setPrettyPrinting().create();
-
+    
     @Override
     public Response toResponse(Throwable ex) {
-        Response.StatusType type = getStatusType(ex);
-        Logger.getLogger(GenericExceptionMapper.class.getName()).log(Level.SEVERE, null, ex);
-        ExceptionDTO err = new ExceptionDTO(type.getStatusCode(), type.getReasonPhrase());
-        return Response.status(type.getStatusCode())
-                .entity(gson.toJson(err))
-                .type(MediaType.APPLICATION_JSON).
-                build();
-    }
-
-    private Response.StatusType getStatusType(Throwable ex) {
-        if (ex instanceof WebApplicationException) {
-            return ((WebApplicationException) ex).getResponse().getStatusInfo();
+        Logger.getLogger(GenericExceptionMapper.class.getName())
+                .log(Level.SEVERE, null, ex);
+                    
+        ExceptionDTO err = new ExceptionDTO(500, "Internal Server Error");
+        if(ex instanceof ClientException){
+            err = new ExceptionDTO(((ClientException) ex).getStatusCode(), ex.getMessage());
         }
-        return Response.Status.INTERNAL_SERVER_ERROR;
-
+        return Response
+                .status(err.getCode())
+                .entity(gson.toJson(err))
+                .type(MediaType.APPLICATION_JSON)
+                .build();
     }
 }

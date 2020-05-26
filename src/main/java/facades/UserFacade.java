@@ -62,18 +62,18 @@ public class UserFacade {
     
     
     // Find a User
-    public UserDTO getUser(Long user_id){
+    public UserDTO getUser(int user_id){
         EntityManager em = getEntityManager();
         User userDTO = em.find(User.class, user_id);
         return new UserDTO(userDTO);
     }
         
    // Get all Users
-    public UserDTO getAllUsers(){
+    public List<UserDTO> getAllUsers(){
         EntityManager em = getEntityManager();
         try {
-            List<User> user = em.createQuery("SELECT u FROM User U", User.class).getResultList();
-            return new UserDTO((User) user);
+            List<UserDTO> users = em.createQuery("SELECT new DTO.UserDTO(u) FROM User U", UserDTO.class).getResultList();
+            return users;
         } finally {
             em.close();
         }
