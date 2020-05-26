@@ -25,7 +25,7 @@ public class FlawedUserFacade {
      * @param _emf
      * @return an instance of this facade class.
      */
-    public static FlawedUserFacade getFacadeExample(EntityManagerFactory _emf) {
+    public static FlawedUserFacade getFlawedUserFacade(EntityManagerFactory _emf) {
         if (instance == null) {
             emf = _emf;
             instance = new FlawedUserFacade();
@@ -37,6 +37,7 @@ public class FlawedUserFacade {
         return emf.createEntityManager();
     }
 
+    //impossible to do SQL injection on this or any other function in this class
     public User getVeryfiedUser(String username, String password) throws AuthenticationException {
         EntityManager em = emf.createEntityManager();
         User u1;

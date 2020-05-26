@@ -9,8 +9,10 @@ import entities.BlogEntry;
 import entities.Comment;
 import entities.User;
 import facades.BlogEntryFacade;
+import facades.FlawedBlogFacade;
 import facades.CommentFacade;
 import facades.UserFacade;
+import facades.FlawedUserFacade;
 import java.sql.Array;
 import java.util.ArrayList;
 import java.util.Date;
@@ -37,7 +39,10 @@ public class NewMain {
             "ax2",
             EMF_Creator.Strategy.CREATE); //DROP_AND_CREATE
     private static final BlogEntryFacade BLOG_FACADE = BlogEntryFacade.getBlogEntryFacade(EMF);
+    private static final FlawedBlogFacade FLAWED_BLOG_FACADE = FlawedBlogFacade.getFlawedBlogFacade(EMF);
     private static final CommentFacade COMMENT_FACADE = CommentFacade.getCommentFacade(EMF);
+    private static final FlawedUserFacade FLAWED_USER_FACADE = FlawedUserFacade.getFlawedUserFacade(EMF);
+    private static final UserFacade USER_FACADE = UserFacade.getUserFacade(EMF);
 
     public static void main(String[] args) throws AuthenticationException {
         //Persistence.generateSchema("pu", null);
@@ -54,8 +59,12 @@ public class NewMain {
         //System.out.println(userBlogList.get(1));
         
         //COMMENT_FACADE.deleteComment(7);
-        COMMENT_FACADE.addComment("Wow great post, pls maek more.", 2, 3);
+        //COMMENT_FACADE.addComment("1 OR 1=1", 2, 3);
         
+        //FLAWED_USER_FACADE.getVeryfiedUser("smollen", "pwinef");
+        //FLAWED_USER_FACADE.getVeryfiedUser("and or 1=1 and email like('%bender%')", "pwinef");
+        
+        //FLAWED_BLOG_FACADE.getBlogEntriesByUser("1 OR 1=1");
         
         /*
         User u1 = new User("smollen", "user", "ewegg");
