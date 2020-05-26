@@ -16,12 +16,14 @@ import entities.User;
 public class CommentDTO {
     
     private int id;
-    private String userName;
+    private int blogEntryId;
+    private UserDTO user;
     private String content;
 
     public CommentDTO(Comment c) {
         this.id = c.getId();
-        this.userName = c.getUser().getUserName();
+        this.blogEntryId = c.getBlogEntry().getId();
+        this.user = new UserDTO(c.getUser());
         this.content = c.getContent();
     }
 
@@ -31,6 +33,14 @@ public class CommentDTO {
 
     public void setId(int id) {
         this.id = id;
+    }
+
+    public int getBlogEntryId() {
+        return blogEntryId;
+    }
+
+    public void setBlogEntryId(int blogEntryId) {
+        this.blogEntryId = blogEntryId;
     }
 
     public String getContent() {
@@ -43,7 +53,7 @@ public class CommentDTO {
 
     @Override
     public String toString() {
-        return "CommentDTO{" + "id=" + id + ", userName=" + userName + ", content=" + content + '}';
+        return "CommentDTO{" + "id=" + id + ", userId=" + user + ", content=" + content + '}';
     }
     
     
