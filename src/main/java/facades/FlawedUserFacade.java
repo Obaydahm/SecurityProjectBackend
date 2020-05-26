@@ -51,7 +51,6 @@ public class FlawedUserFacade {
             em.close();
         }
         return u1;
-
     }
 
     /*

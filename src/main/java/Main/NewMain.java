@@ -62,8 +62,7 @@ public class NewMain {
         //COMMENT_FACADE.deleteComment(7);
         //COMMENT_FACADE.addComment("1 OR 1=1", 2, 3);
 
-        
-        //FLAWED_USER_FACADE.getVeryfiedUser("smollen", "pwinef");
+        FLAWED_USER_FACADE.getVeryfiedUser("smollen", "pwinef");
         //FLAWED_USER_FACADE.getVeryfiedUser("and or 1=1 and email like('%bender%')", "pwinef");
         
         //FLAWED_BLOG_FACADE.getBlogEntriesByUser("1 OR 1=1");
