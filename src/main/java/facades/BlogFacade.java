@@ -10,6 +10,8 @@ import DTO.CommentDTO;
 import entities.BlogEntry;
 import entities.Comment;
 import entities.User;
+import exceptions.ClientException;
+import exceptions.NotFoundException;
 import java.util.Date;
 import java.util.List;
 import javax.persistence.EntityManager;
@@ -150,20 +152,19 @@ public class BlogFacade {
         return new CommentDTO(c);
     }
     
-    public Comment deleteComment(int id) {
+    public Comment deleteComment(int id) throws NotFoundException{
         EntityManager em = getEntityManager();
-        Comment c = em.find(Comment.class, id);
 
         try {
+            Comment c = em.find(Comment.class, id);
+            if(c == null) throw new NotFoundException("Comment not found", 404);//
             em.getTransaction().begin();
             em.remove(c);
             em.getTransaction().commit();
-        }catch(Exception e){
-            return null;
+            return c;
         } finally {
             em.close();
         }
-        return c;
     }
     
     public static void main(String[] args) {

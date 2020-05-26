@@ -14,9 +14,12 @@ import java.util.List;
 import javax.naming.AuthenticationException;
 import entities.BlogEntry;
 import entities.Comment;
+import exceptions.NotFoundException;
 import utils.EMF_Creator;
 import facades.BlogFacade;
+import java.util.Date;
 import java.util.List;
+import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
@@ -32,17 +35,13 @@ import javax.ws.rs.core.Response;
 @Path("blogentry")
 public class BlogEntryResource {
 
-    private static final EntityManagerFactory EMF = EMF_Creator.createEntityManagerFactory(
-            "pu",
-            "jdbc:mysql://localhost:3307/sec",
-            "dev",
-            "ax2",
-            EMF_Creator.Strategy.CREATE);
+    private static final EntityManagerFactory EMF = EMF_Creator.createEntityManagerFactory(EMF_Creator.DbSelector.DEV, EMF_Creator.Strategy.CREATE);
 
     //An alternative way to get the EntityManagerFactory, whithout having to type the details all over the code
     //EMF = EMF_Creator.createEntityManagerFactory(DbSelector.DEV, Strategy.CREATE);
     private static final BlogFacade FACADE = BlogFacade.getBlogFacade(EMF);
     private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
+    
     
     @GET
     @Path("all")
@@ -89,11 +88,6 @@ public class BlogEntryResource {
     @Produces({MediaType.APPLICATION_JSON})
     public String deleteBlogEntry(@PathParam("id") int id) throws Exception {
         BlogEntry be = FACADE.deleteBlogEntry(id);
-
-        if (be == null) {
-            return "{\"status\": 404, \"msg\":\"No information with provided id found\"}";
-        }
-        
         return "{\"status\": 200, \"msg\":\"Blog entry with id "+be.getId()+" has been deleted\"}";
     }
     
@@ -113,13 +107,8 @@ public class BlogEntryResource {
     @Path("deletecomment/{id}")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces({MediaType.APPLICATION_JSON})
-    public String deleteComment(@PathParam("id") int id) throws Exception {
-        Comment c = FACADE.deleteComment(id);
-
-        if (c == null) {
-            return "{\"status\": 404, \"msg\":\"No information with provided id found\"}";
-        }
-        
+    public String deleteComment(@PathParam("id") int id) throws NotFoundException {
+        Comment c = FACADE.deleteComment(id); //        
         return "{\"status\": 200, \"msg\":\"OK\"}";
     }
     
