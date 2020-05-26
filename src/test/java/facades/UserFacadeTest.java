@@ -2,37 +2,37 @@ package facades;
 
 import utils.EMF_Creator;
 import entities.User;
-import java.util.ArrayList;
-import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.AfterEach;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import utils.EMF_Creator.DbSelector;
 import utils.EMF_Creator.Strategy;
 
 //Uncomment the line below, to temporarily disable this test
-//@Disabled
+@Disabled
 public class UserFacadeTest {
 
-    private static EntityManagerFactory EMF;
-    private static UserFacade FACADE;
-    private static List<User> USERS = new ArrayList();
+    private static EntityManagerFactory emf;
+    private static UserFacade facade;
 
     public UserFacadeTest() {
     }
 
     //@BeforeAll
     public static void setUpClass() {
-        EMF = EMF_Creator.createEntityManagerFactory(
+        emf = EMF_Creator.createEntityManagerFactory(
                 "pu",
                 "jdbc:mysql://localhost:3307/startcode_test",
                 "dev",
                 "ax2",
                 EMF_Creator.Strategy.CREATE);
-        FACADE = UserFacade.getUserFacade(EMF);
+        facade = UserFacade.getUserFacade(emf);
     }
 
     /*   **** HINT **** 
@@ -43,41 +43,40 @@ public class UserFacadeTest {
      */
     @BeforeAll
     public static void setUpClassV2() {
-       EMF = EMF_Creator.createEntityManagerFactory(DbSelector.TEST,Strategy.DROP_AND_CREATE);
-       FACADE = UserFacade.getUserFacade(EMF);
+       emf = EMF_Creator.createEntityManagerFactory(DbSelector.TEST,Strategy.DROP_AND_CREATE);
+       facade = UserFacade.getUserFacade(emf);
     }
-    
 
-    @BeforeEach
-    public void setUp() {
-        EntityManager em = EMF.createEntityManager();
-        User f1 = new User();
-        User f2 = new User();
-        
-        USERS.add(f1);
-        USERS.add(f2);
-        
-        try {
-            em.getTransaction().begin();
-            em.createNamedQuery("Facade.deleteAllRows").executeUpdate();
-            em.persist(f1);
-            em.persist(f2);
-            em.getTransaction().commit();
-        } finally {
-            em.close();
-        }
+    @AfterAll
+    public static void tearDownClass() {
+//        Clean up database after test is done or use a persistence unit with drop-and-create to start up clean on every test
     }
-//    @AfterEach
-//    public void tearDown() {
+
+
+//    @BeforeEach
+//    public void setUp() {
+//        EntityManager em = emf.createEntityManager();
+//        try {
+//            em.getTransaction().begin();
+//            em.createNamedQuery("RenameMe.deleteAllRows").executeUpdate();
+//            em.persist(new User("Some txt", "More text"));
+//            em.persist(new User("aaa", "bbb"));
+//
+//            em.getTransaction().commit();
+//        } finally {
+//            em.close();
+//        }
+//    }
+
+    @AfterEach
+    public void tearDown() {
 //        Remove any data after each test was run
-//    }
+    }
 
-//    @Test
-//    public void testAFacadeMethod() {
-//        int exp = USERS.size();
-//        
-//        int act = FACADE.getAllUsers().length;
-//        assertEquals(exp, act);
-//    }
+    // TODO: Delete or change this method 
+    @Test
+    public void testAFacadeMethod() {
+        assertEquals(2, facade.getUserCount(), "Expects two rows in the database");
+    }
 
 }
