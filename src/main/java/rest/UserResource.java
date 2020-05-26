@@ -55,7 +55,7 @@ public class UserResource {
     @Path("/{id}")
     @DELETE
     @Produces(MediaType.APPLICATION_JSON)
-    public UserDTO userDTO(@PathParam("id") Long id) {
+    public UserDTO userDTO(@PathParam("id") int id) {
         UserDTO deletedUser = FACADE.remove(id);
         return deletedUser;
     }

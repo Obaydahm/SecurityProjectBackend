@@ -79,15 +79,14 @@ public class UserFacade {
         }
     }
         
-    public UserDTO remove(long id){
+    public UserDTO remove(int id){
         EntityManager em = getEntityManager();
         try {
             em.getTransaction().begin();
-            UserDTO u = em.find(UserDTO.class, id);
-            em.remove(em.merge(u));
+            User u = em.find(User.class, id);
+            em.remove(u);
             em.getTransaction().commit();
-            return u;
-            
+            return new UserDTO(u);
         } finally {
             em.close();
         }
