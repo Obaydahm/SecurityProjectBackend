@@ -64,7 +64,7 @@ public class NewMain {
         
         //COMMENT_FACADE.deleteComment(7);
         //BLOG_FACADE.addBlogEntry("Hvorfor sker det?", "Jeg kan simpelthen ikke tro at det sker", 3);
-        //BLOG_FACADE.addComment( 2, 4, "hhhe");
+        //BLOG_FACADE.addComment( 2, 4, "0 or 1=1 and username like('%admin%')");
         //User u = new User("DarkCrystalFan96", "user", "gelfling");
         //UserDTO uDTO = new UserDTO(u);
         //USER_FACADE.addUser(uDTO);
