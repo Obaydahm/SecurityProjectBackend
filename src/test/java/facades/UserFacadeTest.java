@@ -32,7 +32,7 @@ public class UserFacadeTest {
                 "dev",
                 "ax2",
                 EMF_Creator.Strategy.CREATE);
-        facade = UserFacade.getFacadeExample(emf);
+        facade = UserFacade.getUserFacade(emf);
     }
 
     /*   **** HINT **** 
@@ -44,7 +44,7 @@ public class UserFacadeTest {
     @BeforeAll
     public static void setUpClassV2() {
        emf = EMF_Creator.createEntityManagerFactory(DbSelector.TEST,Strategy.DROP_AND_CREATE);
-       facade = UserFacade.getFacadeExample(emf);
+       facade = UserFacade.getUserFacade(emf);
     }
 
     @AfterAll
@@ -52,16 +52,15 @@ public class UserFacadeTest {
 //        Clean up database after test is done or use a persistence unit with drop-and-create to start up clean on every test
     }
 
-    // Setup the DataBase in a known state BEFORE EACH TEST
-    //TODO -- Make sure to change the script below to use YOUR OWN entity class
+
 //    @BeforeEach
 //    public void setUp() {
 //        EntityManager em = emf.createEntityManager();
 //        try {
 //            em.getTransaction().begin();
 //            em.createNamedQuery("RenameMe.deleteAllRows").executeUpdate();
-//            em.persist(new UserFacade("Some txt", "More text"));
-//            em.persist(new UserFacade("aaa", "bbb"));
+//            em.persist(new User("Some txt", "More text"));
+//            em.persist(new User("aaa", "bbb"));
 //
 //            em.getTransaction().commit();
 //        } finally {
