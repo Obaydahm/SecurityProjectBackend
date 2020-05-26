@@ -71,7 +71,7 @@ public class NewMain {
 
         //System.out.println(BCrypt.hashpw("ewegg", BCrypt.gensalt(12)));
         
-        System.out.println(USER_FACADE.getVeryfiedUser("DarkCrystalFan96", "gelfling").getUserName());
+        //System.out.println(USER_FACADE.getVeryfiedUser("DarkCrystalFan96", "gelfling").getUserName());
         //FLAWED_USER_FACADE.getVeryfiedUser("and or 1=1 and email like('%bender%')", "pwinef");
         
         //FLAWED_BLOG_FACADE.getBlogEntriesByUser("1 OR 1=1");
