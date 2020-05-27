@@ -6,9 +6,10 @@ import exceptions.NotFoundException;
 import exceptions.UsernameExistsException;
 import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.List;
-import javax.naming.AuthenticationException;
+import exceptions.AuthenticationException;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
+import javax.persistence.NoResultException;
 import org.eclipse.persistence.exceptions.DatabaseException;
 
 /**
@@ -107,19 +108,21 @@ public class UserFacade {
         
     }
     
-    public User getVeryfiedUser(String username, String password) throws AuthenticationException {
+    public User getVerifiedUser(String username, String password) throws AuthenticationException {
         EntityManager em = emf.createEntityManager();
-        User u1;
+        User u;
         try {
             em.getTransaction().begin();
-            u1 = em.createQuery("SELECT a FROM User a WHERE a.userName=:name", User.class).setParameter("name", username).getSingleResult();
-            if (u1 == null || !u1.verifyPassword(password, u1.getPassword())) {
-                throw new AuthenticationException("Invalid user name or password");
+            u = em.createQuery("SELECT u FROM User u WHERE u.userName=:name", User.class).setParameter("name", username).getSingleResult();
+            if (!u.verifyPassword(password, u.getPassword())) {
+                throw new AuthenticationException("Invalid username or password");
             }
-        } finally {
+        }catch(NoResultException e){
+            throw new AuthenticationException("Invalid username or password");
+        }finally {
             em.close();
         }
-        return u1;
+        return u;
 
     }
 

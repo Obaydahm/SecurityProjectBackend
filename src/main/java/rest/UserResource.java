@@ -5,17 +5,28 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import com.nimbusds.jose.JOSEException;
+import com.nimbusds.jose.JWSAlgorithm;
+import com.nimbusds.jose.JWSHeader;
+import com.nimbusds.jose.JWSSigner;
+import com.nimbusds.jose.crypto.MACSigner;
+import com.nimbusds.jwt.JWTClaimsSet;
+import com.nimbusds.jwt.SignedJWT;
 import entities.BlogEntry;
 import entities.Comment;
 import entities.User;
+import exceptions.GenericExceptionMapper;
 import exceptions.InvalidInputException;
 import exceptions.NotFoundException;
 import exceptions.UsernameExistsException;
+import exceptions.AuthenticationException;
 import facades.UserFacade;
 import java.util.Date;
 import utils.EMF_Creator;
 import java.util.List;
-import javax.naming.AuthenticationException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
@@ -27,11 +38,12 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
+import security.SharedSecret;
 
 //Todo Remove or change relevant parts before ACTUAL use
 @Path("user")
 public class UserResource {
-
+    private static final int TOKEN_EXPIRE_TIME = 1000 * 60 * 30; //30 min
     private static final EntityManagerFactory EMF = EMF_Creator.createEntityManagerFactory(
             "pu",
             "jdbc:mysql://localhost:3307/sec",
@@ -125,7 +137,7 @@ public class UserResource {
     }
 
     // Delete user
-    @Path("/{id}")
+    @Path("{id}")
     @DELETE
     @Produces(MediaType.APPLICATION_JSON)
     public UserDTO userDTO(@PathParam("id") int id) throws NotFoundException {
@@ -167,13 +179,45 @@ public class UserResource {
         JsonObject json = new JsonParser().parse(jsonString).getAsJsonObject();
         String username = json.get("userName").getAsString();
         String password = json.get("password").getAsString();
+        
         try {
-            FACADE.getVeryfiedUser(username, password);
-        } catch (AuthenticationException e) {
-            e.getMessage();
-            return "wrong password or username";
-
+            User user = FACADE.getVerifiedUser(username, password);
+            String token = createToken(username, user.getRole());
+            
+            JsonObject responseJson = new JsonObject();
+            responseJson.addProperty("userName", username);
+            responseJson.addProperty("token", token);
+            responseJson.addProperty("role", user.getRole());
+            
+            return GSON.toJson(responseJson);
+            
+        } catch (JOSEException | AuthenticationException e) {
+            if (e instanceof AuthenticationException) {
+                throw (AuthenticationException) e;
+            }
+            Logger.getLogger(GenericExceptionMapper.class.getName()).log(Level.SEVERE, null, e);
         }
-        return "Login succesful";
+        throw new AuthenticationException();
+    }
+    
+    private String createToken(String userName, String role) throws JOSEException {
+
+        StringBuilder res = new StringBuilder();
+        String issuer = "4SEMEXAM";
+
+        JWSSigner signer = new MACSigner(SharedSecret.getSharedKey());
+        Date date = new Date();
+        JWTClaimsSet claimsSet = new JWTClaimsSet.Builder()
+                .subject(userName)
+                .claim("username", userName)
+                .claim("role", role)
+                .claim("issuer", issuer)
+                .issueTime(date)
+                .expirationTime(new Date(date.getTime() + TOKEN_EXPIRE_TIME))
+                .build();
+        SignedJWT signedJWT = new SignedJWT(new JWSHeader(JWSAlgorithm.HS256), claimsSet);
+        signedJWT.sign(signer);
+        return signedJWT.serialize();
+
     }
 }

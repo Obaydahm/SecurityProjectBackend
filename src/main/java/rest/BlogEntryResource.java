@@ -21,6 +21,7 @@ import utils.EMF_Creator;
 import facades.BlogFacade;
 import java.util.Date;
 import java.util.List;
+import javax.annotation.security.RolesAllowed;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.ws.rs.Consumes;
@@ -114,7 +115,7 @@ public class BlogEntryResource {
         BlogEntryDTO blogEntry = FACADE.editBlogEntry(title, content, id);
         return GSON.toJson(blogEntry);
     }
-
+    
     @DELETE
     @Path("delete/{id}")
     @Consumes(MediaType.APPLICATION_JSON)
