@@ -14,6 +14,8 @@ import java.util.List;
 import javax.naming.AuthenticationException;
 import entities.BlogEntry;
 import entities.Comment;
+import exceptions.ClientException;
+import exceptions.InvalidInputException;
 import exceptions.NotFoundException;
 import utils.EMF_Creator;
 import facades.BlogFacade;
@@ -25,6 +27,7 @@ import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
@@ -53,7 +56,7 @@ public class BlogEntryResource {
     @GET
     @Path("getblogentriesbyuser/{id}")
     @Produces({MediaType.APPLICATION_JSON})
-    public String getBlogEntriesByUser(@PathParam("id") int id) throws Exception {
+    public String getBlogEntriesByUser(@PathParam("id") int id) throws NotFoundException {
         List<BlogEntryDTO> be = FACADE.getBlogEntriesByUser(id);
         if (be == null) {
             return "{\"status\": 404, \"msg\":\"No information with provided id found\"}";
@@ -64,21 +67,51 @@ public class BlogEntryResource {
     @GET
     @Path("{id}")
     @Produces({MediaType.APPLICATION_JSON})
-    public String getBlogEntryById(@PathParam("id") int id) throws Exception {
-        BlogEntry be = FACADE.getBlogEntryById(id);
-        if (be == null) {
-            return "{\"status\": 404, \"msg\":\"No information with provided id found\"}";
-        }
-        return GSON.toJson(new BlogEntryDTO(be));
+    public String getBlogEntryById(@PathParam("id") int id) throws NotFoundException {
+        BlogEntryDTO be = FACADE.getBlogEntryById(id);
+        return GSON.toJson(be);
     }
     
     @POST
     @Path("add")
     @Produces({MediaType.APPLICATION_JSON})
     @Consumes({MediaType.APPLICATION_JSON})
-    public String postBlogEntry(String json) {
+    public String addBlogEntry(String json) throws ClientException {
         JsonObject blogEntryJson = GSON.fromJson(json, JsonObject.class);
-        BlogEntryDTO blogEntry = FACADE.addBlogEntry(blogEntryJson.get("title").getAsString(), blogEntryJson.get("content").getAsString(), blogEntryJson.get("userId").getAsInt());
+        
+        String title = blogEntryJson.get("title").getAsString();
+        if(title == null || title.isEmpty()) throw new InvalidInputException("You must enter a title.");
+        
+        String content = blogEntryJson.get("content").getAsString();
+        if(content == null || content.isEmpty()) throw new InvalidInputException("You're not allowed to create blog entries without content.");
+        
+        int userId;
+        try{
+            userId = blogEntryJson.get("userId").getAsInt();
+        }catch(Exception e){ throw new InvalidInputException("An error has occurred. Try again."); }
+        
+        BlogEntryDTO blogEntry = FACADE.addBlogEntry(title, content, userId);
+        return GSON.toJson(blogEntry);
+    }
+    
+    @PUT
+    @Path("edit")
+    @Produces({MediaType.APPLICATION_JSON})
+    @Consumes({MediaType.APPLICATION_JSON})
+    public String editBlogEntry(String json) throws NotFoundException, InvalidInputException {
+        JsonObject blogEntryJson = GSON.fromJson(json, JsonObject.class);
+        String title = blogEntryJson.get("title").getAsString();
+        if(title == null || title.isEmpty()) throw new InvalidInputException("You must enter a title.");
+        
+        String content = blogEntryJson.get("content").getAsString();
+        if(content == null || content.isEmpty()) throw new InvalidInputException("Blog entries has to have content.");
+        
+        int id;
+        try{
+            id = blogEntryJson.get("id").getAsInt();
+        }catch(Exception e){ throw new InvalidInputException("An error has occurred. Try again."); }
+        
+        BlogEntryDTO blogEntry = FACADE.editBlogEntry(title, content, id);
         return GSON.toJson(blogEntry);
     }
 
@@ -86,20 +119,27 @@ public class BlogEntryResource {
     @Path("delete/{id}")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces({MediaType.APPLICATION_JSON})
-    public String deleteBlogEntry(@PathParam("id") int id) throws Exception {
+    public String deleteBlogEntry(@PathParam("id") int id) throws NotFoundException {
         BlogEntry be = FACADE.deleteBlogEntry(id);
-        return "{\"status\": 200, \"msg\":\"Blog entry with id "+be.getId()+" has been deleted\"}";
+        return "{\"status\": 200, \"msg\":\"OK\"}";
     }
     
     @POST
     @Path("addcomment")
     @Produces({MediaType.APPLICATION_JSON})
     @Consumes({MediaType.APPLICATION_JSON})
-    public String addBlogEntry(String json) {
+    public String addComment(String json) throws NotFoundException, InvalidInputException {
         JsonObject commentJson = GSON.fromJson(json, JsonObject.class);
-        int blogEntryId = commentJson.get("blogEntryId").getAsInt();
-        int userId = commentJson.get("userId").getAsInt();
+        int blogEntryId;
+        int userId;
+        try{
+            blogEntryId  = commentJson.get("blogEntryId").getAsInt();
+            userId = commentJson.get("userId").getAsInt();
+        }catch(Exception e){ throw new InvalidInputException("An error has occurred. Try again."); }
+        
         String content = commentJson.get("content").getAsString();
+        if(content == null || content.isEmpty()) throw new InvalidInputException("Comments must have content.");
+        
         return GSON.toJson(FACADE.addComment(blogEntryId, userId, content));
     }
     

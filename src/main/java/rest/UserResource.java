@@ -8,6 +8,9 @@ import com.google.gson.JsonParser;
 import entities.BlogEntry;
 import entities.Comment;
 import entities.User;
+import exceptions.InvalidInputException;
+import exceptions.NotFoundException;
+import exceptions.UsernameExistsException;
 import facades.UserFacade;
 import java.util.Date;
 import utils.EMF_Creator;
@@ -107,8 +110,17 @@ public class UserResource {
     @POST
     @Produces({MediaType.APPLICATION_JSON})
     @Consumes({MediaType.APPLICATION_JSON})
-    public String createUser(UserDTO userDTO) {
-        FACADE.addUser(userDTO);
+    public String createUser(String json) throws UsernameExistsException, InvalidInputException {
+        JsonObject jsonObject = GSON.fromJson(json, JsonObject.class);
+        String userName = jsonObject.get("userName").getAsString();
+        String password = jsonObject.get("password").getAsString();
+        
+        if(userName.isEmpty() || userName == null) throw new InvalidInputException("You must enter a username.");        
+        if(password.isEmpty() || password == null) throw new InvalidInputException("You must enter a password.");
+
+        
+        UserDTO userDTO = new UserDTO(jsonObject.get("userName").getAsString(), "user");
+        FACADE.addUser(userDTO, password);
         return "{\"msg\":\"Login created\"}";
     }
 
@@ -116,7 +128,7 @@ public class UserResource {
     @Path("/{id}")
     @DELETE
     @Produces(MediaType.APPLICATION_JSON)
-    public UserDTO userDTO(@PathParam("id") int id) {
+    public UserDTO userDTO(@PathParam("id") int id) throws NotFoundException {
         UserDTO deletedUser = FACADE.remove(id);
         return deletedUser;
     }
@@ -125,7 +137,7 @@ public class UserResource {
     @Path("id/{id}")
     @GET
     @Produces({MediaType.APPLICATION_JSON})
-    public UserDTO findUser(@PathParam("id") int id) {
+    public UserDTO findUser(@PathParam("id") int id) throws NotFoundException {
         UserDTO u = FACADE.getUser(id);
         return u;
     }
@@ -153,7 +165,7 @@ public class UserResource {
     @Produces({MediaType.APPLICATION_JSON})
     public String login(String jsonString) throws AuthenticationException {
         JsonObject json = new JsonParser().parse(jsonString).getAsJsonObject();
-        String username = json.get("username").getAsString();
+        String username = json.get("userName").getAsString();
         String password = json.get("password").getAsString();
         try {
             FACADE.getVeryfiedUser(username, password);

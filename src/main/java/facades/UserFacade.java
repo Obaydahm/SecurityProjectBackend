@@ -2,10 +2,14 @@ package facades;
 
 import DTO.UserDTO;
 import entities.User;
+import exceptions.NotFoundException;
+import exceptions.UsernameExistsException;
+import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.List;
 import javax.naming.AuthenticationException;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
+import org.eclipse.persistence.exceptions.DatabaseException;
 
 /**
  *
@@ -38,34 +42,31 @@ public class UserFacade {
     }
     
     // Create
-    public UserDTO addUser(UserDTO u){
+    public UserDTO addUser(UserDTO u, String password) throws UsernameExistsException{
         EntityManager em = getEntityManager();
         
-        User user1 = new User();
-        //System.out.println(u.getUserName());
-        user1.setUserName(u.getUserName());
-        //System.out.println(u.getPassword());
-        user1.setPassword(u.getPassword());
-        user1.setRole(u.getRole());
-        //System.out.println(u.getRole());
+        User user = new User(u, password);
         
         try{
             em.getTransaction().begin();
-            em.persist(user1);
+            em.persist(user);
             em.getTransaction().commit();
+        }catch(Exception e){
+            if(e.getMessage().contains("Duplicate") && e.getMessage().contains("USERNAME")) throw new UsernameExistsException(u.getUserName());
         } finally {
             em.close();
         }
-        return new UserDTO(user1);
+        return new UserDTO(user);
     }
     
     
     
     // Find a User
-    public UserDTO getUser(int user_id){
+    public UserDTO getUser(int userId) throws NotFoundException{
         EntityManager em = getEntityManager();
-        User userDTO = em.find(User.class, user_id);
-        return new UserDTO(userDTO);
+        User user = em.find(User.class, userId);
+        if(user == null) throw new NotFoundException("User not found.");
+        return new UserDTO(user);
     }
         
    // Get all Users
@@ -79,14 +80,15 @@ public class UserFacade {
         }
     }
         
-    public UserDTO remove(int id){
+    public UserDTO remove(int id) throws NotFoundException{
         EntityManager em = getEntityManager();
         try {
             em.getTransaction().begin();
-            User u = em.find(User.class, id);
-            em.remove(u);
+            User user = em.find(User.class, id);
+            if(user == null) throw new NotFoundException("User not found");
+            em.remove(user);
             em.getTransaction().commit();
-            return new UserDTO(u);
+            return new UserDTO(user);
         } finally {
             em.close();
         }

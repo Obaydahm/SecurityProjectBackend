@@ -20,7 +20,7 @@ public class GenericExceptionMapper implements ExceptionMapper<Throwable> {
         Logger.getLogger(GenericExceptionMapper.class.getName())
                 .log(Level.SEVERE, null, ex);
                     
-        ExceptionDTO err = new ExceptionDTO(500, "Internal Server Error");
+        ExceptionDTO err = new ExceptionDTO(500, "An error has occurred. Please try again.");
         if(ex instanceof ClientException){
             err = new ExceptionDTO(((ClientException) ex).getStatusCode(), ex.getMessage());
         }
