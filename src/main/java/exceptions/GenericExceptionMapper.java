@@ -9,6 +9,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.ext.ExceptionMapper;
 import javax.ws.rs.ext.Provider;
+import javax.ws.rs.NotFoundException;
 
 @Provider
 public class GenericExceptionMapper implements ExceptionMapper<Throwable> {
@@ -25,7 +26,9 @@ public class GenericExceptionMapper implements ExceptionMapper<Throwable> {
             err = new ExceptionDTO(((ClientException) ex).getStatusCode(), ex.getMessage());
         }else if(ex instanceof AuthenticationException){
             err = new ExceptionDTO(((AuthenticationException) ex).getStatusCode(), ex.getMessage());
-        } 
+        }else if(ex instanceof NotFoundException){
+            err = new ExceptionDTO(404, ex.getMessage());
+        }  
         return Response
                 .status(err.getCode())
                 .entity(gson.toJson(err))
@@ -35,7 +38,7 @@ public class GenericExceptionMapper implements ExceptionMapper<Throwable> {
     
     public static Response makeErrRes(String msg,int status){
         ExceptionDTO error = new ExceptionDTO(status, msg);
-        String errJson =gson.toJson(error); 
+        String errJson = gson.toJson(error); 
         return Response.status(error.getCode())
                 .entity(errJson)
                 .type(MediaType.APPLICATION_JSON)

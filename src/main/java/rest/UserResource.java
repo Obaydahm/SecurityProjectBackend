@@ -21,6 +21,7 @@ import exceptions.NotFoundException;
 import exceptions.UsernameExistsException;
 import exceptions.AuthenticationException;
 import facades.UserFacade;
+import java.text.ParseException;
 import java.util.Date;
 import utils.EMF_Creator;
 import java.util.List;
@@ -33,11 +34,13 @@ import javax.persistence.Persistence;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
+import javax.ws.rs.HeaderParam;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 import security.SharedSecret;
 
 //Todo Remove or change relevant parts before ACTUAL use
@@ -220,4 +223,17 @@ public class UserResource {
         return signedJWT.serialize();
 
     }
+    
+    @Path("validatetoken")
+    @POST
+    @Produces({MediaType.APPLICATION_JSON})
+    public Response validateToken(@HeaderParam("x-access-token") String token) throws ParseException, JOSEException, AuthenticationException {
+        System.out.println(token);
+        int status = FACADE.validateToken(token);
+        return Response.status(200)
+                .entity("{\"code\":200, \"message\": \"Token valid\"}")
+                .type(MediaType.APPLICATION_JSON)
+                .build();
+    }
+    
 }
