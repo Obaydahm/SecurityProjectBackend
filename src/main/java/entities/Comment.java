@@ -29,7 +29,7 @@ public class Comment implements Serializable {
     @ManyToOne
     private BlogEntry blogEntry;
     
-    @OneToOne
+    @ManyToOne
     private User user;
     
     private String content;

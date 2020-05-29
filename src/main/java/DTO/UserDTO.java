@@ -16,7 +16,11 @@ public class UserDTO {
     private int id;
     private String userName;
     private String role;
-    private String password;
+
+    public UserDTO(String userName, String role) {
+        this.userName = userName;
+        this.role = role;
+    }
     
     public UserDTO(){}
     
@@ -24,7 +28,6 @@ public class UserDTO {
         this.id = u.getId();
         this.userName = u.getUserName();
         this.role = u.getRole();
-        this.password = u.getPassword();
     }
 
     public int getId() {
@@ -38,10 +41,6 @@ public class UserDTO {
     public String getRole() {
         return role;
     }
-
-    public String getPassword() {
-        return password;
-    }    
 
     @Override
     public String toString() {

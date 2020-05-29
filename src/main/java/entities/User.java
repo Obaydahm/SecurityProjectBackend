@@ -5,8 +5,10 @@
  */
 package entities;
 
+import DTO.UserDTO;
 import java.io.Serializable;
 import java.util.List;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -29,6 +31,7 @@ public class User implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
+    @Column(unique=true)
     private String userName;
     private String password;
     private String role;
@@ -42,6 +45,12 @@ public class User implements Serializable {
     public User(String userName, String role, String password) {
         this.userName = userName;
         this.role = role;
+        this.password = BCrypt.hashpw(password, BCrypt.gensalt(12));
+    }
+    
+    public User(UserDTO userDTO, String password) {
+        this.userName = userDTO.getUserName();
+        this.role = userDTO.getRole();
         this.password = BCrypt.hashpw(password, BCrypt.gensalt(12));
     }
 
