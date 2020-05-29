@@ -24,6 +24,9 @@ public class UserDTO {
         this.role = u.getRole();
         this.password = u.getPassword();
     }
+    public UserDTO(){
+        
+    }
 
     public int getId() {
         return id;
