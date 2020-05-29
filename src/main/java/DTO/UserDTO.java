@@ -18,6 +18,8 @@ public class UserDTO {
     private String role;
     private String password;
     
+    public UserDTO(){}
+    
     public UserDTO(User u){
         this.id = u.getId();
         this.userName = u.getUserName();
