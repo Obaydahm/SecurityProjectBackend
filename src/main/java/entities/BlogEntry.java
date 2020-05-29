@@ -37,7 +37,7 @@ public class BlogEntry implements Serializable {
     private Date dateOfCreation;
     private String title;
     private String content;
-    @OneToMany(mappedBy = "blogEntry")
+    @OneToMany(mappedBy = "blogEntry", cascade = CascadeType.REMOVE)
     private List<Comment> comments;
     
     public BlogEntry(){}

@@ -9,10 +9,10 @@ package exceptions;
  *
  * @author Obaydah Mohamad
  */
-public class NotFoundException extends ClientException{
-    public NotFoundException(String message) {
-        super(message, 404);
+public class InvalidInputException extends ClientException{
+    
+    public InvalidInputException(String message) {
+        super(message, 422);
     }
+    
 }
-
-

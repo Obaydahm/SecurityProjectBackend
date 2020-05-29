@@ -2,7 +2,7 @@ package rest;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import exceptions.PersonNotFoundException;
+import exceptions.UsernameExistsException;
 import java.util.HashMap;
 import java.util.Map;
 import javax.ws.rs.Produces;
@@ -40,15 +40,15 @@ public class ErrorResource {
      *
      * @param id
      * @return
-     * @throws PersonNotFoundException
+     * @throws UsernameExistsException
      */
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     @Path("{id}")
-    public String getJson(@PathParam("id") int id) throws PersonNotFoundException{
+    public String getJson(@PathParam("id") int id) throws UsernameExistsException{
         Person found = persons.get(id);
         if (found == null){
-        throw new PersonNotFoundException("Person with provided Id not found", 404);
+        throw new UsernameExistsException("Person with provided Id not found");
         }            
         return gson.toJson(found);
 

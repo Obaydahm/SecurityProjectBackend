@@ -5,30 +5,48 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import com.nimbusds.jose.JOSEException;
+import com.nimbusds.jose.JWSAlgorithm;
+import com.nimbusds.jose.JWSHeader;
+import com.nimbusds.jose.JWSSigner;
+import com.nimbusds.jose.crypto.MACSigner;
+import com.nimbusds.jwt.JWTClaimsSet;
+import com.nimbusds.jwt.SignedJWT;
 import entities.BlogEntry;
 import entities.Comment;
 import entities.User;
+import exceptions.GenericExceptionMapper;
+import exceptions.InvalidInputException;
+import exceptions.NotFoundException;
+import exceptions.UsernameExistsException;
+import exceptions.AuthenticationException;
 import facades.UserFacade;
+import java.text.ParseException;
 import java.util.Date;
 import utils.EMF_Creator;
 import java.util.List;
-import javax.naming.AuthenticationException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
+import javax.ws.rs.HeaderParam;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+import security.SharedSecret;
 
 //Todo Remove or change relevant parts before ACTUAL use
 @Path("user")
 public class UserResource {
-
+    private static final int TOKEN_EXPIRE_TIME = 1000 * 60 * 30; //30 min
     private static final EntityManagerFactory EMF = EMF_Creator.createEntityManagerFactory(
             "pu",
             "jdbc:mysql://localhost:3307/sec",
@@ -107,16 +125,25 @@ public class UserResource {
     @POST
     @Produces({MediaType.APPLICATION_JSON})
     @Consumes({MediaType.APPLICATION_JSON})
-    public String createUser(UserDTO userDTO) {
-        FACADE.addUser(userDTO);
+    public String createUser(String json) throws UsernameExistsException, InvalidInputException {
+        JsonObject jsonObject = GSON.fromJson(json, JsonObject.class);
+        String userName = jsonObject.get("userName").getAsString();
+        String password = jsonObject.get("password").getAsString();
+        
+        if(userName.isEmpty() || userName == null) throw new InvalidInputException("You must enter a username.");        
+        if(password.isEmpty() || password == null) throw new InvalidInputException("You must enter a password.");
+
+        
+        UserDTO userDTO = new UserDTO(jsonObject.get("userName").getAsString(), "user");
+        FACADE.addUser(userDTO, password);
         return "{\"msg\":\"Login created\"}";
     }
 
     // Delete user
-    @Path("/{id}")
+    @Path("{id}")
     @DELETE
     @Produces(MediaType.APPLICATION_JSON)
-    public UserDTO userDTO(@PathParam("id") int id) {
+    public UserDTO userDTO(@PathParam("id") int id) throws NotFoundException {
         UserDTO deletedUser = FACADE.remove(id);
         return deletedUser;
     }
@@ -125,7 +152,7 @@ public class UserResource {
     @Path("id/{id}")
     @GET
     @Produces({MediaType.APPLICATION_JSON})
-    public UserDTO findUser(@PathParam("id") int id) {
+    public UserDTO findUser(@PathParam("id") int id) throws NotFoundException {
         UserDTO u = FACADE.getUser(id);
         return u;
     }
@@ -153,15 +180,60 @@ public class UserResource {
     @Produces({MediaType.APPLICATION_JSON})
     public String login(String jsonString) throws AuthenticationException {
         JsonObject json = new JsonParser().parse(jsonString).getAsJsonObject();
-        String username = json.get("username").getAsString();
+        String username = json.get("userName").getAsString();
         String password = json.get("password").getAsString();
+        
         try {
-            FACADE.getVeryfiedUser(username, password);
-        } catch (AuthenticationException e) {
-            e.getMessage();
-            return "wrong password or username";
-
+            User user = FACADE.getVerifiedUser(username, password);
+            String token = createToken(username, user.getRole());
+            
+            JsonObject responseJson = new JsonObject();
+            responseJson.addProperty("userName", username);
+            responseJson.addProperty("token", token);
+            responseJson.addProperty("role", user.getRole());
+            
+            return GSON.toJson(responseJson);
+            
+        } catch (JOSEException | AuthenticationException e) {
+            if (e instanceof AuthenticationException) {
+                throw (AuthenticationException) e;
+            }
+            Logger.getLogger(GenericExceptionMapper.class.getName()).log(Level.SEVERE, null, e);
         }
-        return "Login succesful";
+        throw new AuthenticationException();
     }
+    
+    private String createToken(String userName, String role) throws JOSEException {
+
+        StringBuilder res = new StringBuilder();
+        String issuer = "4SEMEXAM";
+
+        JWSSigner signer = new MACSigner(SharedSecret.getSharedKey());
+        Date date = new Date();
+        JWTClaimsSet claimsSet = new JWTClaimsSet.Builder()
+                .subject(userName)
+                .claim("username", userName)
+                .claim("role", role)
+                .claim("issuer", issuer)
+                .issueTime(date)
+                .expirationTime(new Date(date.getTime() + TOKEN_EXPIRE_TIME))
+                .build();
+        SignedJWT signedJWT = new SignedJWT(new JWSHeader(JWSAlgorithm.HS256), claimsSet);
+        signedJWT.sign(signer);
+        return signedJWT.serialize();
+
+    }
+    
+    @Path("validatetoken")
+    @POST
+    @Produces({MediaType.APPLICATION_JSON})
+    public Response validateToken(@HeaderParam("x-access-token") String token) throws ParseException, JOSEException, AuthenticationException {
+        System.out.println(token);
+        int status = FACADE.validateToken(token);
+        return Response.status(200)
+                .entity("{\"code\":200, \"message\": \"Token valid\"}")
+                .type(MediaType.APPLICATION_JSON)
+                .build();
+    }
+    
 }

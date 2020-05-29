@@ -47,13 +47,12 @@ public class BlogFacade {
         return emf.createEntityManager();
     }
     
-    public BlogEntry getBlogEntryById(int id){
+    public BlogEntryDTO getBlogEntryById(int id) throws NotFoundException{
         EntityManager em = emf.createEntityManager();
         try{
             BlogEntry blogEntry = em.find(BlogEntry.class, id);
-            return blogEntry;
-        }catch(Exception e){
-            return null;
+            if(blogEntry == null) throw new NotFoundException("The requested blog entry was not found.");
+            return new BlogEntryDTO(blogEntry);
         }finally{
             em.close();
         }
@@ -69,10 +68,10 @@ public class BlogFacade {
         }
     }
     
-    public List<BlogEntryDTO> getBlogEntriesByUser(int userId) {
+    public List<BlogEntryDTO> getBlogEntriesByUser(int userId) throws NotFoundException {
         EntityManager em = getEntityManager();
         User user = em.find(User.class, userId);
-        if(user == null) return null; //her bør der kastes user not found exception
+        if(user == null) throw new NotFoundException("User not found."); //her bør der kastes user not found exception
         
         try {
             List<BlogEntryDTO> list =  em.createQuery("SELECT new DTO.BlogEntryDTO(b) FROM BlogEntry b WHERE b.user = :user", BlogEntryDTO.class).setParameter("user", user).getResultList();
@@ -100,31 +99,29 @@ public class BlogFacade {
         return new BlogEntryDTO(be);
     }
     
-    public BlogEntry deleteBlogEntry(int id) {
+    public BlogEntry deleteBlogEntry(int id) throws NotFoundException {
         EntityManager em = getEntityManager();
         BlogEntry be = em.find(BlogEntry.class, id);
-
+        if(be == null) throw new NotFoundException("The requested blog entry was not found.");
         try {
             em.getTransaction().begin();
             em.remove(be);
             em.getTransaction().commit();
             return be;
-        }catch(Exception e){
-            return null;
         }finally {
             em.close();
         }
     }
     
-    public BlogEntry editBlogEntry(String title, String content, int blogEntryId) {
+    public BlogEntryDTO editBlogEntry(String title, String content, int blogEntryId) throws NotFoundException {
         EntityManager em = getEntityManager();
-        BlogEntry oldBlogEntry = getBlogEntryById(blogEntryId);
-        if(oldBlogEntry == null) return null;
-        oldBlogEntry.setTitle(title);
-        oldBlogEntry.setContent(content);
+        BlogEntry blogEntry = em.find(BlogEntry.class, blogEntryId);
+        if(blogEntry == null) throw new NotFoundException("The requested blog entry was not found.");
+        blogEntry.setTitle(title);
+        blogEntry.setContent(content);
         try{
             em.getTransaction().begin();
-            em.merge(oldBlogEntry);
+            em.merge(blogEntry);
             em.getTransaction().commit();
         }catch(Exception e){
             e.printStackTrace();
@@ -132,15 +129,19 @@ public class BlogFacade {
             em.close();
         }
         
-        return oldBlogEntry;
+        return new BlogEntryDTO(blogEntry);
     }
     
         // Create 
-    public CommentDTO addComment(int blogEntryId, int userId, String content) {
+    public CommentDTO addComment(int blogEntryId, int userId, String content) throws NotFoundException {
         EntityManager em = getEntityManager();
 
         BlogEntry be = em.find(BlogEntry.class, blogEntryId);
+        if(be == null) throw new NotFoundException("The requested blog entry was not found.");
+        
         User user = em.find(User.class, userId);
+        if(user == null) throw new NotFoundException("User not found.");
+        
         Comment c = new Comment(content, be, user);
         try {
             em.getTransaction().begin();
@@ -154,10 +155,9 @@ public class BlogFacade {
     
     public Comment deleteComment(int id) throws NotFoundException{
         EntityManager em = getEntityManager();
-
+        Comment c = em.find(Comment.class, id);
+        if(c == null) throw new NotFoundException("Comment not found.");
         try {
-            Comment c = em.find(Comment.class, id);
-            if(c == null) throw new NotFoundException("Comment not found", 404);//
             em.getTransaction().begin();
             em.remove(c);
             em.getTransaction().commit();
@@ -167,7 +167,7 @@ public class BlogFacade {
         }
     }
     
-    public static void main(String[] args) {
+    /*public static void main(String[] args) {
         EntityManagerFactory EMF = EMF_Creator.createEntityManagerFactory(EMF_Creator.DbSelector.DEV, EMF_Creator.Strategy.CREATE);
         BlogFacade bf = BlogFacade.getBlogFacade(EMF);
         
@@ -186,5 +186,5 @@ public class BlogFacade {
         //System.out.println(bf.deleteBlogEntry(6));
         
         //System.out.println(bf.editBlogEntry("editedTitle", "contentAlsoEdited", 2));
-    }
+    }*/
 }
