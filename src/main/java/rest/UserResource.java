@@ -1,5 +1,6 @@
 package rest;
 
+import DTO.DosObject;
 import DTO.UserDTO;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -20,9 +21,11 @@ import exceptions.InvalidInputException;
 import exceptions.NotFoundException;
 import exceptions.UsernameExistsException;
 import exceptions.AuthenticationException;
+import exceptions.UserBlockedException;
 import facades.UserFacade;
 import java.text.ParseException;
 import java.util.Date;
+import java.util.HashMap;
 import utils.EMF_Creator;
 import java.util.List;
 import java.util.logging.Level;
@@ -46,6 +49,10 @@ import security.SharedSecret;
 //Todo Remove or change relevant parts before ACTUAL use
 @Path("user")
 public class UserResource {
+    private static HashMap<String, DosObject> LOGIN_REQS = new HashMap<>();
+    private static HashMap<String, Long> BLOCKED_USERS = new HashMap<>();
+    private static final long BLOCK_TIME = 60000; // 1 minute
+    
     private static final int TOKEN_EXPIRE_TIME = 1000 * 60 * 30; //30 min
     private static final EntityManagerFactory EMF = EMF_Creator.createEntityManagerFactory(
             "pu",
@@ -59,6 +66,69 @@ public class UserResource {
     private static final UserFacade FACADE = UserFacade.getUserFacade(EMF);
     private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
     private static final EntityManager em = EMF.createEntityManager();
+    
+    private boolean dosDetect(String username){
+        //return true = brugeren er blokeret
+        //return false = brugeren er ikke blokeret
+        //vi bruger boolean'en som returnere af denne metode i login endpointet - linje 259
+        
+        final Long currentTime = new Date().getTime();
+        System.out.println(LOGIN_REQS);
+        System.out.println(BLOCKED_USERS);
+        
+        //tjekker om brugeren er blokeret
+        if(BLOCKED_USERS.containsKey(username)){
+            //regner ud hvor langtid der er tilbage af blokeringen
+            Long diff = BLOCKED_USERS.get(username) - currentTime;
+            
+            //hvis blokeringens tiden er overstået, fjerne vi brugeren fra vores maps, så brugeren kan logge på igen
+            if(diff <= 0){
+                LOGIN_REQS.remove(username);
+                BLOCKED_USERS.remove(username);
+                System.out.println("Removed from Blocked: " + username);
+                return false;
+            }else{
+                //hvis blokeringstiden ikke er overstået, så returnere vi true
+                System.out.println("/////////////////////////////");
+                System.out.println("User still blocked: " + username);
+                System.out.println(Math.abs((diff / 1000)) + " seconds left");
+                System.out.println("/////////////////////////////");
+                return true;
+            }
+        }
+        
+        // Tjekker om vi registreret login på brugeren
+        if(LOGIN_REQS.containsKey(username)){
+            //Vi har registreret login på brugeren
+            //Henter bruger DosObjektet fra vores login map "register"
+            DosObject userDosObject = LOGIN_REQS.get(username);
+           
+            //regner ud hvor langtid der er gået siden det her request og det der blev lavet lige inden
+            Long diff = currentTime - userDosObject.getTime();
+            
+            //hvis der er gået mere end 10sekunder, så ser vi det som forsøg på bruteforce/dos
+            if(diff < 10000){
+                System.out.println("Request made within 10 seconds");
+                //vi øger antallet af forsøg med 1
+                userDosObject.incrementCount();
+                
+                //Hvis der er blevet lavet mere end 3 forsøg, så blokerer vi brugeren, da det er et brute force
+                if(userDosObject.getCount() >= 3){
+                    System.out.println("Third request made - User now blocked for 1 minute: " + username);
+                    BLOCKED_USERS.put(username, currentTime + BLOCK_TIME);
+                    return true;
+                }
+            }else{
+                //der er gået mere end 10 sekunder siden sidste request
+                //opdaterer brugeren i vores login map "register"
+                LOGIN_REQS.put(username, new DosObject(currentTime));
+            }
+        }else{
+            //brugeren findes ikke i vores login-register, så vi tilføjer den
+            LOGIN_REQS.put(username, new DosObject(currentTime));
+        }
+        return false;
+    }
     
     @GET
     @Path("populate")
@@ -178,10 +248,15 @@ public class UserResource {
     @POST
     @Consumes({MediaType.APPLICATION_JSON})
     @Produces({MediaType.APPLICATION_JSON})
-    public String login(String jsonString) throws AuthenticationException {
+    public String login(String jsonString) throws AuthenticationException, UserBlockedException {
         JsonObject json = new JsonParser().parse(jsonString).getAsJsonObject();
         String username = json.get("userName").getAsString();
         String password = json.get("password").getAsString();
+        
+        boolean dosDetected = dosDetect(username);
+        //kast UserBlockedException hvis brugeren er blokeret.
+        //status kode 403 - forbidden
+        if(dosDetected) throw new UserBlockedException();
         
         try {
             User user = FACADE.getVerifiedUser(username, password);
