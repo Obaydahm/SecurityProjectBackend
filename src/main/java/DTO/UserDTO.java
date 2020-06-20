@@ -22,6 +22,8 @@ public class UserDTO {
         this.role = role;
     }
     
+    public UserDTO(){}
+    
     public UserDTO(User u){
         this.id = u.getId();
         this.userName = u.getUserName();
