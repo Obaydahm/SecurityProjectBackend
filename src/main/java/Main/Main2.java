@@ -21,7 +21,7 @@ import utils.EMF_Creator;
  * @author Obaydah Mohamad
  */
 public class Main2 {
-    private static final EntityManagerFactory EMF = EMF_Creator.createEntityManagerFactory(
+   /* private static final EntityManagerFactory EMF = EMF_Creator.createEntityManagerFactory(
             "pu",
             "jdbc:mysql://localhost:3307/sec",
             "dev",
@@ -31,9 +31,12 @@ public class Main2 {
     //An alternative way to get the EntityManagerFactory, whithout having to type the details all over the code
     //EMF = EMF_Creator.createEntityManagerFactory(DbSelector.DEV, Strategy.CREATE);
     private static final UserFacade FACADE = UserFacade.getUserFacade(EMF);
-    private static final EntityManager em = EMF.createEntityManager();
+    private static final EntityManager em = EMF.createEntityManager();*/
     public static void main(String[] args) {
-        User u1 = new User("smollen", "user", "ewegg");
+        
+        System.out.println((-5000) > 60000);
+        
+        /*User u1 = new User("smollen", "user", "ewegg");
         User u2 = new User("TheSnarx", "user", "+wef32+0");
         User u3 = new User("AndersAnd", "user", "ipwef23f");
         User admin = new User("Admin", "admin", "admin");
@@ -79,7 +82,7 @@ public class Main2 {
             e.printStackTrace();
         }finally {
             em.close();
-        }
+        }*/
         
         
     }
