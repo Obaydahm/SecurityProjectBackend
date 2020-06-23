@@ -10,11 +10,11 @@ package DTO;
  * @author Obaydah Mohamad
  */
 public class DosObject {
-    private int count = 0; //Antal gange
+    private int count; //Antal gange
     private long time; //Millisekunder
     
     public DosObject(long time){
-        this.count++;
+        this.count = 1;
         this.time = time;
     }
     

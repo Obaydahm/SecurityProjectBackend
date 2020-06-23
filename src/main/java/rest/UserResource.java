@@ -120,7 +120,7 @@ public class UserResource {
                 }
             }else{
                 //der er gået mere end 10 sekunder siden sidste request
-                //opdaterer brugeren i vores login map "register"
+                //nulstiller brugeren i vores login map "register"
                 LOGIN_REQS.put(username, new DosObject(currentTime));
             }
         }else{
